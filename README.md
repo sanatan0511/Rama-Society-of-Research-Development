@@ -1,4 +1,4 @@
-<html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -91,8 +91,10 @@
       margin-top: 20px;
       font-style: italic;
     }
-
   </style>
+
+  <!-- Include Google reCAPTCHA Script -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <!-- Admin Login Form -->
@@ -105,6 +107,10 @@
     <form id="loginForm" onsubmit="return false;"> <!-- Prevent form submission to handle via JS -->
       <input type="text" id="username" placeholder="Enter Username" required>
       <input type="password" id="password" placeholder="Enter Password" required>
+
+      <!-- reCAPTCHA Widget -->
+      <div class="g-recaptcha" data-sitekey="6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></div>
+
       <button type="button" onclick="validateLogin()">Login</button> <!-- Use type="button" to prevent form submission -->
     </form>
   </div>
@@ -128,16 +134,25 @@
       const enteredUsername = document.getElementById('username').value;
       const enteredPassword = document.getElementById('password').value;
 
+      // Get the reCAPTCHA response token
+      const recaptchaResponse = grecaptcha.getResponse();
+
+      // Check if reCAPTCHA is filled
+      if (recaptchaResponse.length === 0) {
+        alert('Please verify that you are not a robot.');
+        return;
+      }
+
       // Check if entered credentials match predefined ones
       if (enteredUsername === correctUsername && enteredPassword === correctPassword) {
         // If login is successful, redirect to first-page.html
         console.log("Login successful. Redirecting...");
 
         // Optional: Store login status in sessionStorage
-        sessionStorage.setItem("loggedIn", true); 
+        sessionStorage.setItem("loggedIn", true);
 
         // Redirect to first-page.html
-        window.location.href = 'first-page.html'; 
+        window.location.href = 'first-page.html';
       } else {
         // If login fails, show an error message and increase failed attempts counter
         failedAttempts++;

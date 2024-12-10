@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login - Ramanujan Society of Research</title>
+  <title>Admin Login - Rama Society of Research and development</title>
   <style>
     /* Reset CSS */
     * {

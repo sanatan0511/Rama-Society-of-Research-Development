@@ -167,9 +167,9 @@
   <iframe id="liveOutput"></iframe>
 
   <h3>Achievements:</h3>
-  <span class="badge" id="badge1" style="display:none;">First Code Run</span>
-  <span class="badge" id="badge1" style="display:none;">Sky is not the limit</span>
-  <span class="badge" id="badge1" style="display:none;">Dream is not what you see in sleep but is the thing which doesn't let you sleep</span>
+  <span class="badge" id="badge1" style="display:none;">"First Code Run :)"</span>
+  <span class="badge" id="badge2" style="display:none;">"!!!Sky is not the limit!!! :)"</span>
+  <span class="badge" id="badge2" style="display:none;">"Dream is not what you see in sleep but is the thing which doesn't let you sleep :)"</span>
 </div>
 
 <script>
@@ -280,6 +280,10 @@ int main() {
     const result = await response.json();
     output.textContent = result.run.stdout || result.run.stderr || "No output";
     document.getElementById("badge1").style.display = "inline-block";
+    document.getElementById("badge2").style.display = "inline-block";
+    document.getElementById("badge3").style.display = "inline-block";
+
+
   }
 
   function updateLivePreview(code, lang) {

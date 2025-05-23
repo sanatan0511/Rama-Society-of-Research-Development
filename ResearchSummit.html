@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Siya-Rama's Lab - Code Compiler</title>
+  <meta charset="UTF-8" />
+  <title>Siya-Rama's Lab - Advanced Code Compiler</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f7f7f7;
+      background-color: #f0f2f5;
       color: #333;
       transition: background-color 0.3s, color 0.3s;
     }
 
     .dark-mode {
-      background-color: #222;
-      color: #eee;
+      background-color: #1c1c1c;
+      color: #e0e0e0;
     }
 
     .toggle-mode {
@@ -68,10 +68,6 @@
       cursor: pointer;
     }
 
-    #loginPage button:hover {
-      background-color: #45a049;
-    }
-
     #editorPage {
       max-width: 1200px;
       margin: 0 auto;
@@ -79,26 +75,24 @@
     }
 
     #editor {
-      height: 80vh;
-      width: 95%;
-      margin: 0 auto;
+      height: 60vh;
+      width: 100%;
       font-size: 16px;
-      line-height: 1.5;
-      border-radius: 8px;
       border: 1px solid #ccc;
+      border-radius: 6px;
     }
 
-    select, button, textarea {
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
+    select, button, textarea, input[type="file"] {
+      margin: 10px 5px;
+      padding: 10px;
+      font-size: 15px;
       border-radius: 4px;
       border: 1px solid #ccc;
     }
 
     textarea {
       width: 100%;
-      height: 150px;
+      height: 120px;
       resize: vertical;
     }
 
@@ -109,7 +103,6 @@
       border-radius: 5px;
       overflow: auto;
       font-family: monospace;
-      font-size: 14px;
     }
 
     #liveOutput {
@@ -122,82 +115,80 @@
     .badge {
       background-color: #4CAF50;
       color: white;
-      padding: 5px 15px;
+      padding: 6px 12px;
       border-radius: 20px;
-      margin: 5px;
+      margin: 5px 5px 0 0;
       font-size: 14px;
       display: inline-block;
+    }
+
+    #uploadedImage {
+      max-width: 300px;
+      display: none;
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
+  <button class="toggle-mode" onclick="toggleMode()">Switch to Dark Mode</button>
 
-<button class="toggle-mode" onclick="toggleMode()">Switch to Dark Mode</button>
+  <div id="loginPage">
+    <h2>Login to Siya-Rama's Lab</h2>
+    <input type="text" id="userid" placeholder="User ID" required>
+    <input type="password" id="password" placeholder="Password" required>
+    <button onclick="loginUser()">Login</button>
+  </div>
 
-<div id="loginPage">
-  <h2>Login to Siya-Rama's Lab</h2>
-  <input type="text" id="userid" placeholder="User ID" required>
-  <input type="password" id="password" placeholder="Password" required>
-  <button onclick="loginUser()">Login</button>
-</div>
+  <div id="editorPage" style="display:none;">
+    <h1>Welcome to Siya-Rama's Lab</h1>
+    <select id="language" onchange="changeLanguage()">
+      <option value="python3">Python</option>
+      <option value="java">Java</option>
+      <option value="javascript">JavaScript</option>
+      <option value="html">HTML</option>
+      <option value="css">CSS</option>
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
+    </select>
 
-<div id="editorPage" style="display:none;">
-  <h1>Welcome to Siya-Rama's Lab</h1>
+    <button onclick="downloadCode()">⬇️ Download Code</button>
+    <input type="file" id="fileUpload" accept=".txt,.py,.js,.cpp,.c,.html,.css,.java" onchange="uploadCode()" />
+    <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload()" />
 
-  <label for="language">Choose Language:</label>
-  <select id="language" onchange="changeLanguage()">
-    <option value="python3">Python</option>
-    <option value="java">Java</option>
-    <option value="javascript">JavaScript</option>
-    <option value="html">HTML</option>
-    <option value="css">CSS</option>
-    <option value="c">C</option>
-    <option value="cpp">C++</option>
-  </select>
+    <div id="editor"></div>
 
-  <div id="editor"></div>
+    <label for="userInput">User Input:</label>
+    <textarea id="userInput" placeholder="Optional input for your program..."></textarea>
+    <button onclick="runCode()">▶️ Run Code</button>
 
-  <label for="userInput">Input:</label>
-  <textarea id="userInput" placeholder="Optional input for your program..."></textarea>
+    <h3>Output:</h3>
+    <pre id="output">Output will appear here...</pre>
+    <iframe id="liveOutput" sandbox="allow-scripts"></iframe>
 
-  <button onclick="runCode()">Run Code</button>
+    <h3>Achievements:</h3>
+    <span class="badge" id="badge1" style="display:none;">🥇 First Code Run</span>
+    <span class="badge" id="badge2" style="display:none;">🚀 3 Runs Completed</span>
+    <span class="badge" id="badge3" style="display:none;">🌠 5+ Runs - Power User</span>
 
-  <h3>Output:</h3>
-  <pre id="output"></pre>
-  <iframe id="liveOutput"></iframe>
-
-  <h3>Achievements:</h3>
-  <span class="badge" id="badge1" style="display:none;">"First Code Run :)"</span>
-  <span class="badge" id="badge2" style="display:none;">"!!!Sky is not the limit!!! :)"</span>
-  <span class="badge" id="badge2" style="display:none;">"Dream is not what you see in sleep but is the thing which doesn't let you sleep :)"</span>
-</div>
-
+    <h3>Uploaded Image:</h3>
+    <img id="uploadedImage" alt="Preview">
+  </div>
 <script>
   let isDarkMode = false;
   let editor;
+  let runCount = 0;
+  let badgesUnlocked = new Set();
 
   const defaultCodeMap = {
     python3: `print("Hello, World!")`,
-    java: `public class Main {
-  public static void main(String[] args) {
-    System.out.println("Hello, World!");
-  }
-}`,
+    java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
     javascript: `console.log("Hello, World!");`,
-    html: `<!DOCTYPE html>
-<html><head><title>My Page</title></head><body>Hello, World!</body></html>`,
+    html: `<!DOCTYPE html>\n<html><head><title>My Page</title></head><body>Hello, World!</body></html>`,
     css: `body { background-color: lightblue; }`,
-    c: `#include <stdio.h>
-int main() {
-  printf("Hello, World!\\n");
-  return 0;
-}`,
-    cpp: `#include <iostream>
-using namespace std;
-int main() {
-  cout << "Hello, World!" << endl;
-  return 0;
-}`
+    c: `#include <stdio.h>\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}`,
+    cpp: `#include <iostream>\nusing namespace std;\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}`
   };
 
   function toggleMode() {
@@ -205,17 +196,13 @@ int main() {
     document.body.classList.toggle("dark-mode", isDarkMode);
     document.querySelector(".toggle-mode").textContent =
       isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
+    if (editor) editor.setTheme(isDarkMode ? "ace/theme/twilight" : "ace/theme/github");
   }
 
   function loginUser() {
     const user = document.getElementById("userid").value;
     const pass = document.getElementById("password").value;
-
-    if (!user || !pass) {
-      alert("Both fields are required.");
-      return;
-    }
-
+    if (!user || !pass) return alert("Both fields are required.");
     if (user === "admin" && pass === "1234") {
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("editorPage").style.display = "block";
@@ -227,23 +214,15 @@ int main() {
 
   function initializeEditor() {
     editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
+    editor.setTheme("ace/theme/github");
     editor.session.setMode("ace/mode/python");
     editor.setOptions({
-      fontSize: "16pt",
-      fontFamily: "Fira Code, monospace",
+      fontSize: "16px",
       enableBasicAutocompletion: true,
-      enableSnippets: true,
-      enableLiveAutocompletion: true
+      enableLiveAutocompletion: true,
+      enableSnippets: true
     });
-
     editor.setValue(defaultCodeMap["python3"]);
-
-    editor.commands.addCommand({
-      name: "runCodeShortcut",
-      bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
-      exec: runCode
-    });
   }
 
   function changeLanguage() {
@@ -259,46 +238,101 @@ int main() {
     const input = document.getElementById("userInput").value;
     const output = document.getElementById("output");
     output.textContent = "Running...";
+    runCount++;
 
     if (["html", "css", "javascript"].includes(lang)) {
       updateLivePreview(code, lang);
-      output.textContent = "Preview updated below.";
+      output.textContent = "Preview below updated.";
+      handleAchievements();
       return;
     }
 
-    const response = await fetch("https://emkc.org/api/v2/piston/execute", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        language: lang,
-        version: "*",
-        files: [{ content: code }],
-        stdin: input
-      })
-    });
+    try {
+      const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          language: lang,
+          version: "*",
+          files: [{ content: code }],
+          stdin: input
+        })
+      });
+      const result = await response.json();
+      output.textContent = result.run.stdout || result.run.stderr || "No output";
+    } catch (err) {
+      output.textContent = "Error: " + err.message;
+    }
 
-    const result = await response.json();
-    output.textContent = result.run.stdout || result.run.stderr || "No output";
-    document.getElementById("badge1").style.display = "inline-block";
-    document.getElementById("badge2").style.display = "inline-block";
-    document.getElementById("badge3").style.display = "inline-block";
-
-
+    handleAchievements();
   }
 
   function updateLivePreview(code, lang) {
     const iframe = document.getElementById("liveOutput");
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     doc.open();
-    doc.write(lang === "html" ? code : 
-              lang === "css" ? `<style>${code}</style>` : 
+    doc.write(lang === "html" ? code :
+              lang === "css" ? `<style>${code}</style>` :
               `<script>${code}<\/script>`);
     doc.close();
   }
+
+  function handleAchievements() {
+    if (!badgesUnlocked.has("first")) {
+      document.getElementById("badge1").style.display = "inline-block";
+      badgesUnlocked.add("first");
+    }
+    if (runCount >= 3 && !badgesUnlocked.has("three")) {
+      document.getElementById("badge2").style.display = "inline-block";
+      badgesUnlocked.add("three");
+    }
+    if (runCount >= 5 && !badgesUnlocked.has("five")) {
+      document.getElementById("badge3").style.display = "inline-block";
+      badgesUnlocked.add("five");
+    }
+  }
+
+  function uploadCode() {
+    const fileInput = document.getElementById("fileUpload");
+    const file = fileInput.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => editor.setValue(e.target.result, -1);
+    reader.readAsText(file);
+  }
+
+  function downloadCode() {
+    const code = editor.getValue();
+    const lang = document.getElementById("language").value;
+    const blob = new Blob([code], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `code.${lang === 'python3' ? 'py' : lang}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function handleImageUpload() {
+    const fileInput = document.getElementById("imageUpload");
+    const file = fileInput.files[0];
+    if (!file || !file.type.startsWith("image/")) {
+      alert("Please upload a valid image.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById("uploadedImage");
+      img.src = e.target.result;
+      img.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
 </script>
-  <footer>
-    <p>Made with love :) for development purpuse INDIA "♡"</p>
-    <p>&copy; 2025 Rama Society of Research & Development(RSRD). All rights reserved.</p>
-  </footer>
+<footer style="text-align:center; padding:20px 0; background:#f1f1f1; margin-top:40px;">
+  <p>Made with love for development purpose in INDIA ♡</p>
+  <p>&copy; 2025 Rama Society of Research & Development (RSRD). All rights reserved.</p>
+</footer>
 </body>
 </html>

@@ -2,98 +2,169 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Siya-Rama's Lab - Advanced Code Compiler</title>
+  <title>Siya-Rama's Lab - Code Compiler</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Fira Code', monospace, Arial, sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f0f2f5;
+      background-color: #f7f7f7;
       color: #333;
       transition: background-color 0.3s, color 0.3s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     .dark-mode {
-      background-color: #1c1c1c;
-      color: #e0e0e0;
+      background-color: #222;
+      color: #eee;
+    }
+
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .toggle-mode {
-      background-color: #4CAF50;
-      color: white;
-      padding: 8px 16px;
+      background-color: #fff;
+      color: #4CAF50;
       border: none;
-      border-radius: 4px;
+      border-radius: 20px;
+      padding: 8px 16px;
       cursor: pointer;
-      position: absolute;
-      top: 20px;
-      right: 30px;
+      font-weight: 600;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .toggle-mode:hover {
+      background-color: #45a049;
+      color: white;
     }
 
     #loginPage {
+      flex-grow: 1;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      height: 100vh;
       background: linear-gradient(135deg, #4CAF50, #8BC34A);
+      padding: 20px;
+      min-height: 80vh;
     }
 
     #loginPage h2 {
-      font-size: 32px;
+      font-size: 2.5rem;
       color: white;
+      margin-bottom: 30px;
     }
 
     #loginPage input, #loginPage button {
       width: 350px;
+      max-width: 90vw;
       padding: 15px;
       margin: 10px 0;
       border-radius: 25px;
       font-size: 16px;
       border: 2px solid #ddd;
       transition: 0.3s ease;
+      outline-offset: 0;
     }
 
     #loginPage input:focus {
-      border-color: #4CAF50;
+      border-color: #fff;
       outline: none;
+      box-shadow: 0 0 5px 2px #c8f7c5;
     }
 
     #loginPage button {
-      background-color: #4CAF50;
-      color: white;
+      background-color: white;
+      color: #4CAF50;
+      font-weight: bold;
       border: none;
       cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    #loginPage button:hover {
+      background-color: #e8f5e9;
     }
 
     #editorPage {
+      flex-grow: 1;
       max-width: 1200px;
-      margin: 0 auto;
-      padding: 30px;
+      margin: 20px auto 60px;
+      padding: 20px 30px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
 
-    #editor {
-      height: 60vh;
-      width: 100%;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    #editorPage.dark-mode {
+      background: #2a2a2a;
+      color: #ddd;
+    }
+
+    #editorPage h1 {
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 5px;
     }
 
     select, button, textarea, input[type="file"] {
-      margin: 10px 5px;
-      padding: 10px;
-      font-size: 15px;
-      border-radius: 4px;
+      margin: 10px 0 20px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
       border: 1px solid #ccc;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
     }
 
-    textarea {
+    select:focus, textarea:focus, input[type="file"]:focus {
+      border-color: #4CAF50;
+      outline: none;
+      box-shadow: 0 0 5px 2px #a6d785;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      max-width: 200px;
+      user-select: none;
+      box-shadow: 0 4px 8px rgba(76,175,80,0.3);
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #3e8e41;
+    }
+
+    #editor {
+      height: 70vh;
       width: 100%;
-      height: 120px;
-      resize: vertical;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 10px;
     }
 
     pre#output {
@@ -103,133 +174,248 @@
       border-radius: 5px;
       overflow: auto;
       font-family: monospace;
+      font-size: 14px;
+      max-height: 200px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      margin-top: 10px;
     }
 
     #liveOutput {
       width: 100%;
       height: 300px;
       border: 1px solid #ccc;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+
+    .badges {
       margin-top: 20px;
     }
 
     .badge {
       background-color: #4CAF50;
       color: white;
-      padding: 6px 12px;
-      border-radius: 20px;
-      margin: 5px 5px 0 0;
+      padding: 8px 20px;
+      border-radius: 25px;
+      margin: 5px;
       font-size: 14px;
+      display: none;
+      user-select: none;
+      box-shadow: 0 3px 7px rgba(76,175,80,0.5);
+      transition: transform 0.3s ease;
+    }
+
+    .badge.show {
       display: inline-block;
+      animation: badgePop 0.6s forwards;
+    }
+
+    @keyframes badgePop {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     #uploadedImage {
-      max-width: 300px;
+      max-width: 200px;
+      max-height: 200px;
+      margin-top: 10px;
+      border-radius: 10px;
       display: none;
-      margin-top: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      border: 2px solid #4CAF50;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px 10px;
+      background: #f1f1f1;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: auto;
+      user-select: none;
+    }
+
+    footer.dark-mode {
+      background: #111;
+      color: #ccc;
+    }
+
+    /* Responsive */
+    @media (max-width: 650px) {
+      #loginPage input, #loginPage button {
+        width: 90vw;
+      }
+      #editorPage {
+        margin: 15px 10px 40px;
+        padding: 15px;
+      }
+      button, select, textarea {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+
+<header>
+  <div>Siya-Rama's Lab - Code Compiler</div>
   <button class="toggle-mode" onclick="toggleMode()">Switch to Dark Mode</button>
+</header>
 
-  <div id="loginPage">
-    <h2>Login to Siya-Rama's Lab</h2>
-    <input type="text" id="userid" placeholder="User ID" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button onclick="loginUser()">Login</button>
+<div id="loginPage">
+  <h2>Login to Siya-Rama's Lab</h2>
+  <input type="text" id="userid" placeholder="User ID" required />
+  <input type="password" id="password" placeholder="Password" required />
+  <button onclick="loginUser()">Login</button>
+</div>
+
+<div id="editorPage" style="display:none;">
+  <h1>Welcome to Siya-Rama's Lab</h1>
+
+  <label for="language">Choose Language:</label>
+  <select id="language" onchange="changeLanguage()">
+    <option value="python3">Python</option>
+    <option value="java">Java</option>
+    <option value="javascript">JavaScript</option>
+    <option value="html">HTML</option>
+    <option value="css">CSS</option>
+    <option value="c">C</option>
+    <option value="cpp">C++</option>
+  </select>
+
+  <div id="editor"></div>
+
+  <label for="userInput">Input (Optional):</label>
+  <textarea id="userInput" placeholder="Input your program here..."></textarea>
+
+  <div style="display:flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+    <button onclick="runCode()">Run Code (Ctrl+Enter)</button>
+    <button onclick="downloadCode()">Download Code</button>
+
+    <label for="fileUpload" style="margin: 0; cursor: pointer; background: #4CAF50; color: white; padding: 10px 15px; border-radius: 6px; user-select:none;">
+      Upload Code
+      <input type="file" id="fileUpload" accept=".txt,.py,.java,.js,.html,.css,.c,.cpp" onchange="uploadCode()" style="display:none" />
+    </label>
+
+    <label for="imageUpload" style="margin: 0; cursor: pointer; background: #4CAF50; color: white; padding: 10px 15px; border-radius: 6px; user-select:none;">
+      Upload Image
+      <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload()" style="display:none" />
+    </label>
   </div>
 
-  <div id="editorPage" style="display:none;">
-    <h1>Welcome to Siya-Rama's Lab</h1>
-    <select id="language" onchange="changeLanguage()">
-      <option value="python3">Python</option>
-      <option value="java">Java</option>
-      <option value="javascript">JavaScript</option>
-      <option value="html">HTML</option>
-      <option value="css">CSS</option>
-      <option value="c">C</option>
-      <option value="cpp">C++</option>
-    </select>
+  <img id="uploadedImage" alt="Uploaded preview" />
 
-    <button onclick="downloadCode()">⬇️ Download Code</button>
-    <input type="file" id="fileUpload" accept=".txt,.py,.js,.cpp,.c,.html,.css,.java" onchange="uploadCode()" />
-    <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload()" />
+  <h3>Output:</h3>
+  <pre id="output">Output will appear here...</pre>
 
-    <div id="editor"></div>
+  <iframe id="liveOutput" sandbox="allow-scripts" title="Live Output"></iframe>
 
-    <label for="userInput">User Input:</label>
-    <textarea id="userInput" placeholder="Optional input for your program..."></textarea>
-    <button onclick="runCode()">▶️ Run Code</button>
-
-    <h3>Output:</h3>
-    <pre id="output">Output will appear here...</pre>
-    <iframe id="liveOutput" sandbox="allow-scripts"></iframe>
-
-    <h3>Achievements:</h3>
-    <span class="badge" id="badge1" style="display:none;">🥇 First Code Run</span>
-    <span class="badge" id="badge2" style="display:none;">🚀 3 Runs Completed</span>
-    <span class="badge" id="badge3" style="display:none;">🌠 5+ Runs - Power User</span>
-
-    <h3>Uploaded Image:</h3>
-    <img id="uploadedImage" alt="Preview">
+  <div class="badges">
+    <span class="badge" id="badge1">🎉 First Code Run :)</span>
+    <span class="badge" id="badge2">🚀 Sky is not the limit!</span>
+    <span class="badge" id="badge3">🌟 Dreams keep you awake :)</span>
   </div>
+</div>
+
 <script>
   let isDarkMode = false;
   let editor;
   let runCount = 0;
-  let badgesUnlocked = new Set();
+  const badgesUnlocked = new Set();
 
   const defaultCodeMap = {
     python3: `print("Hello, World!")`,
-    java: `public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello, World!");\n  }\n}`,
+    java: `public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello, World!");
+  }
+}`,
     javascript: `console.log("Hello, World!");`,
-    html: `<!DOCTYPE html>\n<html><head><title>My Page</title></head><body>Hello, World!</body></html>`,
+    html: `<!DOCTYPE html>
+<html><head><title>My Page</title></head><body>Hello, World!</body></html>`,
     css: `body { background-color: lightblue; }`,
-    c: `#include <stdio.h>\nint main() {\n  printf("Hello, World!\\n");\n  return 0;\n}`,
-    cpp: `#include <iostream>\nusing namespace std;\nint main() {\n  cout << "Hello, World!" << endl;\n  return 0;\n}`
+    c: `#include <stdio.h>
+int main() {
+  printf("Hello, World!\\n");
+  return 0;
+}`,
+    cpp: `#include <iostream>
+using namespace std;
+int main() {
+  cout << "Hello, World!" << endl;
+  return 0;
+}`
   };
 
   function toggleMode() {
     isDarkMode = !isDarkMode;
     document.body.classList.toggle("dark-mode", isDarkMode);
-    document.querySelector(".toggle-mode").textContent =
-      isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
-    if (editor) editor.setTheme(isDarkMode ? "ace/theme/twilight" : "ace/theme/github");
+    document.querySelector("#editorPage").classList.toggle("dark-mode", isDarkMode);
+    document.querySelector("footer").classList.toggle("dark-mode", isDarkMode);
+    document.querySelector(".toggle-mode").textContent = isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
+
+    // Toggle Ace editor theme as well
+    if (editor) {
+      editor.setTheme(isDarkMode ? "ace/theme/monokai" : "ace/theme/github");
+    }
   }
 
   function loginUser() {
-    const user = document.getElementById("userid").value;
-    const pass = document.getElementById("password").value;
-    if (!user || !pass) return alert("Both fields are required.");
+    const user = document.getElementById("userid").value.trim();
+    const pass = document.getElementById("password").value.trim();
+
+    if (!user || !pass) {
+      alert("Both fields are required.");
+      return;
+    }
+
+    // Simple hardcoded check
     if (user === "admin" && pass === "1234") {
       document.getElementById("loginPage").style.display = "none";
       document.getElementById("editorPage").style.display = "block";
       initializeEditor();
     } else {
-      alert("Invalid credentials. Try admin/1234");
+      alert("Invalid credentials. Try user: admin / pass: 1234");
     }
   }
 
   function initializeEditor() {
     editor = ace.edit("editor");
-    editor.setTheme("ace/theme/github");
+    editor.setTheme("ace/theme/monokai");
     editor.session.setMode("ace/mode/python");
     editor.setOptions({
-      fontSize: "16px",
+      fontSize: "16pt",
+      fontFamily: "'Fira Code', monospace",
       enableBasicAutocompletion: true,
+      enableSnippets: true,
       enableLiveAutocompletion: true,
-      enableSnippets: true
+      wrap: true,
     });
-    editor.setValue(defaultCodeMap["python3"]);
+
+    editor.setValue(defaultCodeMap["python3"], -1);
+
+    // Run code on Ctrl/Cmd+Enter
+    editor.commands.addCommand({
+      name: "runCodeShortcut",
+      bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
+      exec: runCode
+    });
   }
 
   function changeLanguage() {
     const lang = document.getElementById("language").value;
     const aceLang = (lang === "c" || lang === "cpp") ? "c_cpp" : lang;
     editor.session.setMode(`ace/mode/${aceLang}`);
-    editor.setValue(defaultCodeMap[lang]);
+
+    // Set default code for selected language
+    editor.setValue(defaultCodeMap[lang] || "", -1);
   }
 
   async function runCode() {
@@ -242,7 +428,7 @@
 
     if (["html", "css", "javascript"].includes(lang)) {
       updateLivePreview(code, lang);
-      output.textContent = "Preview below updated.";
+      output.textContent = "Preview updated below.";
       handleAchievements();
       return;
     }
@@ -259,7 +445,14 @@
         })
       });
       const result = await response.json();
-      output.textContent = result.run.stdout || result.run.stderr || "No output";
+
+      if (result.run) {
+        output.textContent = result.run.stdout || result.run.stderr || "No output";
+      } else if(result.message) {
+        output.textContent = "Error: " + result.message;
+      } else {
+        output.textContent = "Unknown error occurred.";
+      }
     } catch (err) {
       output.textContent = "Error: " + err.message;
     }
@@ -270,57 +463,107 @@
   function updateLivePreview(code, lang) {
     const iframe = document.getElementById("liveOutput");
     const doc = iframe.contentDocument || iframe.contentWindow.document;
-    doc.open();
-    doc.write(lang === "html" ? code :
-              lang === "css" ? `<style>${code}</style>` :
-              `<script>${code}<\/script>`);
-    doc.close();
+
+    if (lang === "html") {
+      doc.open();
+      doc.write(code);
+      doc.close();
+    } else if (lang === "css") {
+      doc.open();
+      doc.write(`<html><head><style>${code}</style></head><body><h2>CSS Output Preview</h2></body></html>`);
+      doc.close();
+    } else if (lang === "javascript") {
+      doc.open();
+      doc.write(`<html><body><script>${code}<\/script></body></html>`);
+      doc.close();
+    }
   }
 
   function handleAchievements() {
     if (!badgesUnlocked.has("first")) {
-      document.getElementById("badge1").style.display = "inline-block";
+      showBadge("badge1");
       badgesUnlocked.add("first");
     }
     if (runCount >= 3 && !badgesUnlocked.has("three")) {
-      document.getElementById("badge2").style.display = "inline-block";
+      showBadge("badge2");
       badgesUnlocked.add("three");
     }
     if (runCount >= 5 && !badgesUnlocked.has("five")) {
-      document.getElementById("badge3").style.display = "inline-block";
+      showBadge("badge3");
       badgesUnlocked.add("five");
     }
+  }
+
+  function showBadge(id) {
+    const badge = document.getElementById(id);
+    badge.classList.add("show");
+    setTimeout(() => badge.classList.remove("show"), 5000);
+  }
+
+  function downloadCode() {
+    const code = editor.getValue();
+    const lang = document.getElementById("language").value;
+    const extensions = {
+      python3: "py",
+      java: "java",
+      javascript: "js",
+      html: "html",
+      css: "css",
+      c: "c",
+      cpp: "cpp"
+    };
+    const ext = extensions[lang] || "txt";
+    const blob = new Blob([code], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `code.${ext}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   function uploadCode() {
     const fileInput = document.getElementById("fileUpload");
     const file = fileInput.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = e => editor.setValue(e.target.result, -1);
-    reader.readAsText(file);
-  }
 
-  function downloadCode() {
-    const code = editor.getValue();
-    const lang = document.getElementById("language").value;
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `code.${lang === 'python3' ? 'py' : lang}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      editor.setValue(e.target.result, -1);
+      // Try to guess language from extension
+      const ext = file.name.split(".").pop().toLowerCase();
+      const extMap = {
+        py: "python3",
+        java: "java",
+        js: "javascript",
+        html: "html",
+        css: "css",
+        c: "c",
+        cpp: "cpp"
+      };
+      const lang = extMap[ext] || "python3";
+      document.getElementById("language").value = lang;
+      changeLanguage();
+    };
+    reader.readAsText(file);
+    // Reset input to allow re-upload of same file if needed
+    fileInput.value = "";
   }
 
   function handleImageUpload() {
-    const fileInput = document.getElementById("imageUpload");
-    const file = fileInput.files[0];
-    if (!file || !file.type.startsWith("image/")) {
-      alert("Please upload a valid image.");
+    const imgInput = document.getElementById("imageUpload");
+    const file = imgInput.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please upload a valid image file.");
+      imgInput.value = "";
       return;
     }
+
     const reader = new FileReader();
     reader.onload = e => {
       const img = document.getElementById("uploadedImage");
@@ -328,11 +571,24 @@
       img.style.display = "block";
     };
     reader.readAsDataURL(file);
+    // Reset input to allow re-upload
+    imgInput.value = "";
   }
+
+  // Keyboard shortcut for running code outside Ace editor (when user focuses on other inputs)
+  document.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+      if (document.activeElement !== editor.textInput.getElement()) {
+        e.preventDefault();
+        runCode();
+      }
+    }
+  });
 </script>
-<footer style="text-align:center; padding:20px 0; background:#f1f1f1; margin-top:40px;">
-  <p>Made with love for development purpose in INDIA ♡</p>
-  <p>&copy; 2025 Rama Society of Research & Development (RSRD). All rights reserved.</p>
+
+<footer>
+  &copy; 2025 Siya-Rama's Lab. All rights reserved.
 </footer>
+
 </body>
 </html>

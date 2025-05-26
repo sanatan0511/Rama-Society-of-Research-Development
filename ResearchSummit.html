@@ -299,6 +299,106 @@
       color: #ccc;
     }
 
+    /* File Explorer Styles */
+    #fileExplorer {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background: #f9f9f9;
+    }
+
+    #fileExplorer.dark-mode {
+      background: #333;
+      border-color: #555;
+    }
+
+    #fileList {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #fileList li {
+      padding: 8px 12px;
+      margin: 5px 0;
+      background: #fff;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #eee;
+    }
+
+    #fileList li.dark-mode {
+      background: #444;
+      border-color: #555;
+      color: #eee;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .file-icon {
+      margin-right: 10px;
+      color: #4CAF50;
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .file-action {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 5px;
+    }
+
+    .file-action:hover {
+      color: #4CAF50;
+    }
+
+    .file-action.dark-mode {
+      color: #aaa;
+    }
+
+    .file-action.dark-mode:hover {
+      color: #8BC34A;
+    }
+
+    #fileUploadArea {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    #fileUploadArea:hover {
+      border-color: #4CAF50;
+      background: rgba(76, 175, 80, 0.05);
+    }
+
+    #fileUploadArea.dark-mode {
+      border-color: #555;
+      background: rgba(85, 85, 85, 0.2);
+    }
+
+    #fileUploadArea.dark-mode:hover {
+      border-color: #8BC34A;
+      background: rgba(139, 195, 74, 0.1);
+    }
+
     /* Responsive */
     @media (max-width: 650px) {
       #loginPage input, #loginPage button {
@@ -342,6 +442,15 @@
     <option value="cpp">C++</option>
   </select>
 
+  <div id="fileExplorer">
+    <h3>File Explorer</h3>
+    <div id="fileUploadArea" onclick="document.getElementById('multiFileUpload').click()">
+      <p>Drag & drop files here or click to browse</p>
+      <input type="file" id="multiFileUpload" multiple style="display:none" onchange="handleFileUploads(event)" />
+    </div>
+    <ul id="fileList"></ul>
+  </div>
+
   <div id="editor"></div>
 
   <label for="userInput">Input (Optional):</label>
@@ -359,11 +468,6 @@
     <label for="imageUpload" style="margin: 0; cursor: pointer; background: #4CAF50; color: white; padding: 10px 15px; border-radius: 6px; user-select:none;">
       Upload Image
       <input type="file" id="imageUpload" accept="image/*" onchange="handleImageUpload()" style="display:none" />
-    </label>
-
-    <label for="csvUpload" style="margin: 0; cursor: pointer; background: #4CAF50; color: white; padding: 10px 15px; border-radius: 6px; user-select:none;">
-      Upload CSV
-      <input type="file" id="csvUpload" accept=".csv,.txt" onchange="handleCSVUpload()" style="display:none" />
     </label>
   </div>
 
@@ -394,7 +498,8 @@
   let runCount = 0;
   const badgesUnlocked = new Set();
   let pyodide;
-  let uploadedCSV = null;
+  let uploadedFiles = {}; // Store all uploaded files
+  let fileSystem = {}; // Simulated file system for Pyodide
 
   const defaultCodeMap = {
     python3: `# Advanced Python with Data Science Support
@@ -440,8 +545,8 @@ xgb_model.fit(X_train, y_train)
 xgb_accuracy = xgb_model.score(X_test, y_test)
 print(f"XGBoost accuracy: {xgb_accuracy:.2f}")
 
-# To use uploaded CSV files:
-# df = pd.read_csv('uploaded.csv')  # After uploading via the CSV button`,
+# To use uploaded files:
+# df = pd.read_csv('data.csv')  # After uploading via the file explorer`,
     java: `public class Main {
   public static void main(String[] args) {
     System.out.println("Hello, World!");
@@ -527,21 +632,45 @@ int main() {
         console.error("Error loading some packages:", err);
       }
       
-      // Set up the Python environment
+      // Set up the Python environment with file system simulation
       await pyodide.runPythonAsync(`
         import io, sys, base64
-        from js import uploadedCSV
+        from js import fileSystem
         
         # Set up stdout redirection
         sys.stdout = io.StringIO()
         
-        # Function to handle uploaded files
-        def get_uploaded_file(filename):
-            if filename == 'uploaded.csv' and uploadedCSV:
-                import pandas as pd
-                from io import StringIO
-                return pd.read_csv(StringIO(uploadedCSV))
-            raise FileNotFoundError(f"Uploaded file {filename} not found")
+        # File system simulation
+        def read_file(filename, mode='r'):
+            if filename in fileSystem:
+                content = fileSystem[filename]
+                if 'b' in mode:
+                    return io.BytesIO(content.encode('latin1') if isinstance(content, str) else io.BytesIO(content))
+                else:
+                    return io.StringIO(content if isinstance(content, str) else content.decode('utf-8'))
+            raise FileNotFoundError(f"File {filename} not found in virtual file system")
+        
+        def write_file(filename, content, mode='w'):
+            if 'b' in mode:
+                fileSystem[filename] = content.getvalue() if hasattr(content, 'getvalue') else content
+            else:
+                fileSystem[filename] = content.getvalue() if hasattr(content, 'getvalue') else str(content)
+        
+        # Patch open() to use our virtual file system
+        _original_open = open
+        def open(filename, mode='r', *args, **kwargs):
+            if filename.startswith('/') or ':' in filename:
+                return _original_open(filename, mode, *args, **kwargs)
+            return read_file(filename, mode)
+        
+        # Make pandas read_csv work with our file system
+        import pandas as pd
+        _original_read_csv = pd.read_csv
+        def read_csv(filepath_or_buffer, *args, **kwargs):
+            if isinstance(filepath_or_buffer, str) and not filepath_or_buffer.startswith(('http://', 'https://')):
+                return _original_read_csv(read_file(filepath_or_buffer), *args, **kwargs)
+            return _original_read_csv(filepath_or_buffer, *args, **kwargs)
+        pd.read_csv = read_csv
       `);
       
       console.log("Pyodide initialized successfully");
@@ -559,7 +688,20 @@ int main() {
     document.body.classList.toggle("dark-mode", isDarkMode);
     document.querySelector("#editorPage").classList.toggle("dark-mode", isDarkMode);
     document.querySelector("footer").classList.toggle("dark-mode", isDarkMode);
+    document.querySelector("#fileExplorer").classList.toggle("dark-mode", isDarkMode);
     document.querySelector(".toggle-mode").textContent = isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
+
+    // Update file list items
+    const fileItems = document.querySelectorAll('#fileList li');
+    fileItems.forEach(item => {
+      item.classList.toggle('dark-mode', isDarkMode);
+    });
+
+    // Update file action buttons
+    const fileActions = document.querySelectorAll('.file-action');
+    fileActions.forEach(action => {
+      action.classList.toggle('dark-mode', isDarkMode);
+    });
 
     if (editor) {
       editor.setTheme(isDarkMode ? "ace/theme/monokai" : "ace/theme/github");
@@ -678,6 +820,9 @@ int main() {
                 return;
             }
             
+            // Update the file system in Pyodide
+            pyodide.globals.set('fileSystem', fileSystem);
+            
             const visOutput = document.getElementById("visualizationOutput");
             visOutput.innerHTML = "";
             visOutput.style.display = "block";
@@ -702,11 +847,6 @@ int main() {
                     plt.close()
                     return img
             `);
-            
-            // Make the uploaded CSV available to Python
-            if (uploadedCSV) {
-                pyodide.globals.set('uploadedCSV', uploadedCSV);
-            }
             
             // Run the user's code
             try {
@@ -926,33 +1066,212 @@ int main() {
       const img = document.getElementById("uploadedImage");
       img.src = e.target.result;
       img.style.display = "block";
+      
+      // Store the image in the file system
+      const fileName = file.name;
+      uploadedFiles[fileName] = {
+        name: fileName,
+        type: file.type,
+        size: file.size,
+        content: e.target.result
+      };
+      
+      // For Python, store the base64 data
+      fileSystem[fileName] = e.target.result.split(',')[1];
+      
+      updateFileList();
     };
     reader.readAsDataURL(file);
     imgInput.value = "";
   }
 
-  function handleCSVUpload() {
-    const csvInput = document.getElementById("csvUpload");
-    const file = csvInput.files[0];
-    if (!file) return;
+  function handleFileUploads(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
 
-    const reader = new FileReader();
-    reader.onload = e => {
-      uploadedCSV = e.target.result;
-      const csvDisplay = document.getElementById("uploadedCSV");
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        const fileName = file.name;
+        
+        if (file.type.startsWith("image/")) {
+          // Handle images
+          uploadedFiles[fileName] = {
+            name: fileName,
+            type: file.type,
+            size: file.size,
+            content: e.target.result
+          };
+          fileSystem[fileName] = e.target.result.split(',')[1];
+        } else if (file.type === "text/csv" || fileName.endsWith('.csv')) {
+          // Handle CSV files
+          uploadedFiles[fileName] = {
+            name: fileName,
+            type: file.type,
+            size: file.size,
+            content: e.target.result
+          };
+          fileSystem[fileName] = e.target.result;
+          
+          // Show preview for CSV
+          const csvDisplay = document.getElementById("uploadedCSV");
+          const lines = e.target.result.split('\n').slice(0, 6);
+          csvDisplay.innerHTML = `
+            <div class="file-info">
+              <strong>${file.name}</strong> (${(file.size/1024).toFixed(2)} KB)
+            </div>
+            <pre>${lines.join('\n')}${lines.length < e.target.result.split('\n').length ? '\n...' : ''}</pre>
+          `;
+          csvDisplay.style.display = "block";
+        } else {
+          // Handle other text files
+          uploadedFiles[fileName] = {
+            name: fileName,
+            type: file.type,
+            size: file.size,
+            content: e.target.result
+          };
+          fileSystem[fileName] = e.target.result;
+        }
+        
+        updateFileList();
+      };
+
+      if (file.type.startsWith("image/")) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.readAsText(file);
+      }
+    }
+    
+    event.target.value = "";
+  }
+
+  function updateFileList() {
+    const fileList = document.getElementById("fileList");
+    fileList.innerHTML = "";
+    
+    for (const fileName in uploadedFiles) {
+      const file = uploadedFiles[fileName];
+      const listItem = document.createElement("li");
+      if (isDarkMode) listItem.classList.add("dark-mode");
       
-      // Show preview of the CSV
-      const lines = uploadedCSV.split('\n').slice(0, 6);
+      const fileExt = fileName.split('.').pop().toLowerCase();
+      const icon = getFileIcon(fileExt, file.type);
+      
+      listItem.innerHTML = `
+        <div class="file-item">
+          <span class="file-icon">${icon}</span>
+          <span>${fileName} (${formatFileSize(file.size)})</span>
+        </div>
+        <div class="file-actions">
+          <button class="file-action ${isDarkMode ? 'dark-mode' : ''}" onclick="previewFile('${fileName}')" title="Preview">👁️</button>
+          <button class="file-action ${isDarkMode ? 'dark-mode' : ''}" onclick="downloadFile('${fileName}')" title="Download">⤵️</button>
+          <button class="file-action ${isDarkMode ? 'dark-mode' : ''}" onclick="deleteFile('${fileName}')" title="Delete">❌</button>
+        </div>
+      `;
+      fileList.appendChild(listItem);
+    }
+  }
+
+  function getFileIcon(ext, type) {
+    const icons = {
+      'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'svg': '🖼️',
+      'csv': '📊', 'xls': '📊', 'xlsx': '📊',
+      'txt': '📄', 'pdf': '📄',
+      'py': '🐍', 'js': '📜', 'java': '☕', 'html': '🌐', 'css': '🎨',
+      'c': '🔧', 'cpp': '🔧'
+    };
+    
+    if (type.startsWith('image/')) return '🖼️';
+    if (type === 'text/csv') return '📊';
+    
+    return icons[ext] || '📁';
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function previewFile(fileName) {
+    const file = uploadedFiles[fileName];
+    if (!file) return;
+    
+    if (file.type.startsWith('image/')) {
+      document.getElementById('uploadedImage').src = file.content;
+      document.getElementById('uploadedImage').style.display = 'block';
+      document.getElementById('uploadedCSV').style.display = 'none';
+    } else if (file.type === 'text/csv' || fileName.endsWith('.csv')) {
+      const csvDisplay = document.getElementById('uploadedCSV');
+      const lines = file.content.split('\n').slice(0, 6);
       csvDisplay.innerHTML = `
         <div class="file-info">
-          <strong>${file.name}</strong> (${(file.size/1024).toFixed(2)} KB)
+          <strong>${file.name}</strong> (${formatFileSize(file.size)})
         </div>
-        <pre>${lines.join('\n')}${lines.length < uploadedCSV.split('\n').length ? '\n...' : ''}</pre>
+        <pre>${lines.join('\n')}${lines.length < file.content.split('\n').length ? '\n...' : ''}</pre>
       `;
-      csvDisplay.style.display = "block";
-    };
-    reader.readAsText(file);
-    csvInput.value = "";
+      csvDisplay.style.display = 'block';
+      document.getElementById('uploadedImage').style.display = 'none';
+    } else {
+      alert(`File preview for ${fileName}:\n\n${file.content.substring(0, 1000)}${file.content.length > 1000 ? '...' : ''}`);
+    }
+  }
+
+  function downloadFile(fileName) {
+    const file = uploadedFiles[fileName];
+    if (!file) return;
+    
+    let blob;
+    if (file.type.startsWith('image/')) {
+      const base64Data = file.content.split(',')[1];
+      const byteCharacters = atob(base64Data);
+      const byteArrays = [];
+      
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i);
+        }
+        
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+      
+      blob = new Blob(byteArrays, { type: file.type });
+    } else {
+      blob = new Blob([file.content], { type: file.type });
+    }
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function deleteFile(fileName) {
+    if (confirm(`Are you sure you want to delete ${fileName}?`)) {
+      delete uploadedFiles[fileName];
+      delete fileSystem[fileName];
+      updateFileList();
+      
+      // Hide preview if this was the displayed file
+      if (document.getElementById('uploadedImage').src.includes(fileName)) {
+        document.getElementById('uploadedImage').style.display = 'none';
+      }
+      if (document.getElementById('uploadedCSV').textContent.includes(fileName)) {
+        document.getElementById('uploadedCSV').style.display = 'none';
+      }
+    }
   }
 
   document.addEventListener("keydown", e => {
@@ -962,6 +1281,31 @@ int main() {
         runCode();
         editor.focus();
       }
+    }
+  });
+
+  // Handle drag and drop for files
+  const fileUploadArea = document.getElementById('fileUploadArea');
+  
+  fileUploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = '#4CAF50';
+    fileUploadArea.style.backgroundColor = isDarkMode ? 'rgba(139, 195, 74, 0.2)' : 'rgba(76, 175, 80, 0.1)';
+  });
+  
+  fileUploadArea.addEventListener('dragleave', () => {
+    fileUploadArea.style.borderColor = isDarkMode ? '#555' : '#ccc';
+    fileUploadArea.style.backgroundColor = isDarkMode ? 'rgba(85, 85, 85, 0.2)' : 'rgba(76, 175, 80, 0.05)';
+  });
+  
+  fileUploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = isDarkMode ? '#555' : '#ccc';
+    fileUploadArea.style.backgroundColor = isDarkMode ? 'rgba(85, 85, 85, 0.2)' : 'rgba(76, 175, 80, 0.05)';
+    
+    if (e.dataTransfer.files.length > 0) {
+      const fakeEvent = { target: { files: e.dataTransfer.files } };
+      handleFileUploads(fakeEvent);
     }
   });
 </script>

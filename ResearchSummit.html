@@ -399,6 +399,54 @@
       background: rgba(139, 195, 74, 0.1);
     }
 
+    /* Console Styles */
+    #consoleContainer {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #consoleHeader {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    #consoleHeader.dark-mode {
+      background-color: #388E3C;
+    }
+
+    #consoleBody {
+      background-color: #1e1e1e;
+      color: #0f0;
+      padding: 10px;
+      font-family: monospace;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #consoleInput {
+      width: 100%;
+      background-color: #1e1e1e;
+      color: #0f0;
+      border: none;
+      border-top: 1px solid #333;
+      padding: 8px;
+      font-family: monospace;
+      outline: none;
+    }
+
+    #consoleInput:focus {
+      outline: none;
+    }
+
     /* Responsive */
     @media (max-width: 650px) {
       #loginPage input, #loginPage button {
@@ -482,6 +530,18 @@
   
   <h3>Visualization Output:</h3>
   <div id="visualizationOutput"></div>
+
+  <!-- Console for package installation -->
+  <div id="consoleContainer">
+    <div id="consoleHeader" onclick="toggleConsole()">
+      <span>Python Package Installer (Click to toggle)</span>
+      <span id="consoleToggle">+</span>
+    </div>
+    <div id="consoleBody">
+      <div id="consoleOutput"></div>
+      <input type="text" id="consoleInput" placeholder="Enter pip command (e.g., pip install numpy)" onkeydown="handleConsoleInput(event)" />
+    </div>
+  </div>
 
   <div class="badges">
     <span class="badge" id="badge1">🎉 First Code Run :)</span>
@@ -621,7 +681,7 @@ int main() {
       // Load essential packages first
       await pyodide.loadPackage(["micropip", "numpy", "matplotlib"]);
       
-      // Then use micropip to install other packages
+      // Then use micropip to install other packages including xgboost
       try {
         await pyodide.runPythonAsync(`
           import micropip
@@ -640,7 +700,7 @@ int main() {
         # Set up stdout redirection
         sys.stdout = io.StringIO()
         
-        # File system simulation
+        # File system simulation functions
         def read_file(filename, mode='r'):
             file_system = js.fileSystem.to_py()
             if filename in file_system:
@@ -690,7 +750,8 @@ int main() {
     document.body.classList.toggle("dark-mode", isDarkMode);
     document.querySelector("#editorPage").classList.toggle("dark-mode", isDarkMode);
     document.querySelector("footer").classList.toggle("dark-mode", isDarkMode);
-    document.querySelector("#fileExplorer").classList.toggle("dark-mode", isDarkMode);
+    document.querySelector("#fileExplorer").classlassList.toggle("dark-mode", isDarkMode);
+    document.querySelector("#consoleHeader").classList.toggle("dark-mode", isDarkMode);
     document.querySelector(".toggle-mode").textContent = isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
 
     // Update file list items
@@ -822,8 +883,8 @@ int main() {
                 return;
             }
             
-            // Update the file system in Pyodide
-            pyodide.globals.set('fileSystem', fileSystem);
+            // Make the file system available to Pyodide
+            window.fileSystem = fileSystem;
             
             const visOutput = document.getElementById("visualizationOutput");
             visOutput.innerHTML = "";
@@ -1273,6 +1334,64 @@ int main() {
       if (document.getElementById('uploadedCSV').textContent.includes(fileName)) {
         document.getElementById('uploadedCSV').style.display = 'none';
       }
+    }
+  }
+
+  // Console functions for package installation
+  function toggleConsole() {
+    const consoleBody = document.getElementById('consoleBody');
+    const consoleToggle = document.getElementById('consoleToggle');
+    
+    if (consoleBody.style.display === 'none' || !consoleBody.style.display) {
+      consoleBody.style.display = 'block';
+      consoleToggle.textContent = '-';
+      document.getElementById('consoleInput').focus();
+    } else {
+      consoleBody.style.display = 'none';
+      consoleToggle.textContent = '+';
+    }
+  }
+
+  async function handleConsoleInput(event) {
+    if (event.key !== 'Enter') return;
+    
+    const input = document.getElementById('consoleInput');
+    const command = input.value.trim();
+    input.value = '';
+    
+    if (!command) return;
+    
+    const consoleOutput = document.getElementById('consoleOutput');
+    consoleOutput.innerHTML += `<div><span style="color:#4CAF50">$</span> ${command}</div>`;
+    
+    if (command.startsWith('pip install')) {
+      const packages = command.substring('pip install'.length).trim().split(' ');
+      await installPackages(packages, consoleOutput);
+    } else {
+      consoleOutput.innerHTML += `<div style="color:#ff5555">Error: Only "pip install" commands are supported</div>`;
+    }
+    
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
+  }
+
+  async function installPackages(packages, consoleOutput) {
+    if (!pyodide) {
+      consoleOutput.innerHTML += `<div style="color:#ff5555">Error: Python environment not initialized</div>`;
+      return;
+    }
+    
+    try {
+      consoleOutput.innerHTML += `<div>Installing packages: ${packages.join(', ')}...</div>`;
+      
+      await pyodide.runPythonAsync(`
+        import micropip
+        await micropip.install(${JSON.stringify(packages)})
+      `);
+      
+      consoleOutput.innerHTML += `<div style="color:#55ff55">Successfully installed packages: ${packages.join(', ')}</div>`;
+    } catch (error) {
+      consoleOutput.innerHTML += `<div style="color:#ff5555">Error installing packages: ${error.message}</div>`;
+      console.error('Package installation error:', error);
     }
   }
 

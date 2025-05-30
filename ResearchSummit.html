@@ -621,7 +621,7 @@ int main() {
       // Load essential packages first
       await pyodide.loadPackage(["micropip", "numpy", "matplotlib"]);
       
-      // Then use micropip to install other packages including xgboost
+      // Then use micropip to install other packages
       try {
         await pyodide.runPythonAsync(`
           import micropip
@@ -632,29 +632,31 @@ int main() {
         console.error("Error loading some packages:", err);
       }
       
-      // Set up the Python environment with file system simulation
+      // Initialize the file system in Pyodide
       await pyodide.runPythonAsync(`
         import io, sys, base64
-        from js import fileSystem
+        import js
         
         # Set up stdout redirection
         sys.stdout = io.StringIO()
         
         # File system simulation
         def read_file(filename, mode='r'):
-            if filename in fileSystem:
-                content = fileSystem[filename]
+            file_system = js.fileSystem.to_py()
+            if filename in file_system:
+                content = file_system[filename]
                 if 'b' in mode:
-                    return io.BytesIO(content.encode('latin1') if isinstance(content, str) else io.BytesIO(content))
+                    return io.BytesIO(content.encode('latin1') if isinstance(content, str) else content)
                 else:
                     return io.StringIO(content if isinstance(content, str) else content.decode('utf-8'))
             raise FileNotFoundError(f"File {filename} not found in virtual file system")
         
         def write_file(filename, content, mode='w'):
+            file_system = js.fileSystem.to_py()
             if 'b' in mode:
-                fileSystem[filename] = content.getvalue() if hasattr(content, 'getvalue') else content
+                file_system[filename] = content.getvalue() if hasattr(content, 'getvalue') else content
             else:
-                fileSystem[filename] = content.getvalue() if hasattr(content, 'getvalue') else str(content)
+                file_system[filename] = content.getvalue() if hasattr(content, 'getvalue') else str(content)
         
         # Patch open() to use our virtual file system
         _original_open = open

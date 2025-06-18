@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Secure Portal | SiyaRam AI Lab</title>
+  <title>SiyaRam AI Lab - Secure Portal</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></script>
   <style>
     :root {
-      --primary-dark: #0f172a;
-      --primary: #1e40af;
-      --primary-light: #3b82f6;
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
       --secondary: #10b981;
       --danger: #ef4444;
       --warning: #f59e0b;
       --light: #f8fafc;
-      --dark: #020617;
+      --dark: #0f172a;
       --gray: #64748b;
       --gray-light: #e2e8f0;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-      --border-radius: 12px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --border-radius: 10px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
     }
 
     * {
@@ -32,9 +31,9 @@
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--primary-dark);
-      color: var(--light);
+      font-family: 'Poppins', sans-serif;
+      background-color: #f1f5f9;
+      color: var(--dark);
       min-height: 100vh;
       display: flex;
       justify-content: center;
@@ -45,176 +44,102 @@
         radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 0.1) 0px, transparent 50%);
     }
 
-    .security-container {
+    .login-container {
       width: 100%;
-      max-width: 1200px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      background-color: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(10px);
+      max-width: 400px;
+      background-color: white;
       border-radius: var(--border-radius);
-      overflow: hidden;
       box-shadow: var(--shadow-lg);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      overflow: hidden;
     }
 
-    .security-hero {
-      padding: 60px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background: linear-gradient(135deg, rgba(30, 64, 175, 0.7), rgba(16, 185, 129, 0.5)), 
-                  url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80') no-repeat center center;
-      background-size: cover;
-      position: relative;
+    .login-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 30px;
+      text-align: center;
     }
 
-    .security-brand {
+    .logo {
       display: flex;
       align-items: center;
-      margin-bottom: 40px;
-    }
-
-    .security-brand-icon {
-      width: 50px;
-      height: 50px;
-      background-color: var(--light);
-      border-radius: 50%;
-      display: flex;
       justify-content: center;
-      align-items: center;
-      margin-right: 15px;
-      color: var(--primary);
-      font-size: 1.5rem;
+      margin-bottom: 15px;
     }
 
-    .security-brand-text {
+    .logo-icon {
+      font-size: 2rem;
+      margin-right: 10px;
+      color: white;
+    }
+
+    .logo-text {
       font-size: 1.8rem;
       font-weight: 700;
-      background: linear-gradient(to right, var(--light), var(--gray-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
-    .security-hero-title {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-      line-height: 1.2;
+    .login-title {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
     }
 
-    .security-hero-subtitle {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
+    .login-subtitle {
+      font-size: 0.9rem;
       opacity: 0.9;
-      line-height: 1.6;
     }
 
-    .security-features {
-      margin-top: 40px;
+    .login-body {
+      padding: 30px;
     }
 
-    .security-feature {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 20px;
-    }
-
-    .security-feature-icon {
-      width: 24px;
-      height: 24px;
-      background-color: var(--secondary);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-right: 15px;
-      color: var(--light);
-      font-size: 0.8rem;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-
-    .security-feature-text {
-      font-size: 0.95rem;
-    }
-
-    .security-login {
-      padding: 60px;
-      background-color: var(--light);
-      color: var(--dark);
-      position: relative;
-    }
-
-    .security-login-header {
-      margin-bottom: 40px;
-    }
-
-    .security-login-title {
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--primary-dark);
-      margin-bottom: 10px;
-    }
-
-    .security-login-subtitle {
-      color: var(--gray);
-      font-size: 0.95rem;
-    }
-
-    .security-form {
+    .login-form {
       display: flex;
       flex-direction: column;
     }
 
-    .security-form-group {
+    .form-group {
       margin-bottom: 20px;
       position: relative;
     }
 
-    .security-form-label {
+    .form-label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
-      color: var(--dark);
       font-size: 0.9rem;
     }
 
-    .security-form-input {
+    .form-input {
       width: 100%;
-      padding: 14px 14px 14px 45px;
+      padding: 12px 12px 12px 40px;
       border: 1px solid var(--gray-light);
-      border-radius: 8px;
+      border-radius: var(--border-radius);
       font-size: 1rem;
       transition: var(--transition);
-      background-color: white;
-      font-family: 'Inter', sans-serif;
     }
 
-    .security-form-input:focus {
+    .form-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
       outline: none;
     }
 
-    .security-input-icon {
+    .input-icon {
       position: absolute;
-      left: 15px;
-      top: 42px;
+      left: 12px;
+      top: 40px;
       color: var(--gray);
-      font-size: 1.1rem;
     }
 
-    .security-password-toggle {
+    .password-toggle {
       position: absolute;
-      right: 15px;
-      top: 42px;
+      right: 12px;
+      top: 40px;
       cursor: pointer;
       color: var(--gray);
-      font-size: 1.1rem;
     }
 
-    .security-remember-forgot {
+    .remember-forgot {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -222,158 +147,90 @@
       font-size: 0.9rem;
     }
 
-    .security-remember-me {
+    .remember-me {
       display: flex;
       align-items: center;
     }
 
-    .security-remember-me input {
+    .remember-me input {
       margin-right: 8px;
       accent-color: var(--primary);
     }
 
-    .security-forgot-password {
+    .forgot-password {
       color: var(--primary);
       text-decoration: none;
       font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition);
     }
 
-    .security-forgot-password:hover {
-      color: var(--primary-dark);
+    .forgot-password:hover {
       text-decoration: underline;
     }
 
-    .security-recaptcha {
+    .recaptcha-container {
       margin: 20px 0;
       display: flex;
       justify-content: center;
     }
 
-    .security-submit-btn {
-      background: linear-gradient(to right, var(--primary), var(--primary-light));
+    .login-btn {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
       color: white;
       border: none;
-      padding: 14px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: var(--border-radius);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
       margin-bottom: 20px;
-      font-family: 'Inter', sans-serif;
       box-shadow: var(--shadow);
     }
 
-    .security-submit-btn:hover {
-      background: linear-gradient(to right, var(--primary-dark), var(--primary));
+    .login-btn:hover {
       transform: translateY(-2px);
-    }
-
-    .security-divider {
-      display: flex;
-      align-items: center;
-      margin: 20px 0;
-      color: var(--gray);
-      font-size: 0.9rem;
-    }
-
-    .security-divider::before, .security-divider::after {
-      content: "";
-      flex: 1;
-      border-bottom: 1px solid var(--gray-light);
-    }
-
-    .security-divider-text {
-      padding: 0 15px;
-    }
-
-    .security-social-login {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      margin-bottom: 25px;
-    }
-
-    .security-social-btn {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: white;
-      color: var(--dark);
-      border: 1px solid var(--gray-light);
-      cursor: pointer;
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-    }
-
-    .security-social-btn:hover {
-      transform: translateY(-3px);
       box-shadow: var(--shadow-lg);
     }
 
-    .security-footer {
+    .login-footer {
       text-align: center;
       font-size: 0.9rem;
       color: var(--gray);
     }
 
-    .security-footer a {
+    .login-footer a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 500;
     }
 
-    .security-footer a:hover {
+    .login-footer a:hover {
       text-decoration: underline;
     }
 
-    .security-info {
-      margin-top: 30px;
-      padding: 15px;
-      background-color: #f0f7ff;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      color: var(--primary-dark);
-      display: flex;
-      align-items: center;
-      border-left: 4px solid var(--primary);
-    }
-
-    .security-info i {
-      margin-right: 10px;
-      color: var(--primary);
-    }
-
-    /* 2FA Modal */
-    .security-modal {
+    /* Modal styles */
+    .modal {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
+      background-color: rgba(0, 0, 0, 0.7);
       z-index: 1000;
       justify-content: center;
       align-items: center;
-      backdrop-filter: blur(5px);
     }
 
-    .security-modal-content {
+    .modal-content {
       background-color: white;
-      padding: 40px;
+      padding: 30px;
       border-radius: var(--border-radius);
       width: 90%;
-      max-width: 500px;
+      max-width: 400px;
       box-shadow: var(--shadow-lg);
       position: relative;
       animation: modalFadeIn 0.3s;
-      border: 1px solid rgba(0, 0, 0, 0.1);
     }
 
     @keyframes modalFadeIn {
@@ -387,512 +244,250 @@
       }
     }
 
-    .security-close-modal {
+    .close-modal {
       position: absolute;
       top: 15px;
       right: 15px;
       font-size: 1.5rem;
       cursor: pointer;
       color: var(--gray);
-      transition: var(--transition);
     }
 
-    .security-close-modal:hover {
-      color: var(--dark);
-    }
-
-    .security-modal-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
+    .modal-title {
+      font-size: 1.3rem;
+      margin-bottom: 15px;
       color: var(--primary-dark);
     }
 
-    .security-modal-subtitle {
+    .modal-text {
       margin-bottom: 20px;
       color: var(--gray);
-      font-size: 0.95rem;
-      line-height: 1.6;
+      font-size: 0.9rem;
     }
 
-    .security-code-inputs {
+    .code-inputs {
       display: flex;
       justify-content: space-between;
-      margin: 30px 0;
+      margin: 20px 0;
     }
 
-    .security-code-input {
+    .code-input {
       width: 50px;
-      height: 60px;
+      height: 50px;
       text-align: center;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       border: 1px solid var(--gray-light);
-      border-radius: 8px;
-      font-family: 'JetBrains Mono', monospace;
-      transition: var(--transition);
+      border-radius: 5px;
     }
 
-    .security-code-input:focus {
+    .code-input:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
       outline: none;
     }
 
-    .security-modal-btn {
+    .modal-btn {
       width: 100%;
-      padding: 14px;
-      border-radius: 8px;
+      padding: 12px;
+      border-radius: var(--border-radius);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
       transition: var(--transition);
-      margin-top: 15px;
+      margin-top: 10px;
       border: none;
     }
 
-    .security-modal-primary {
+    .btn-primary {
       background-color: var(--primary);
       color: white;
     }
 
-    .security-modal-primary:hover {
+    .btn-primary:hover {
       background-color: var(--primary-dark);
     }
 
-    .security-modal-secondary {
+    .btn-secondary {
       background-color: transparent;
       color: var(--primary);
       border: 1px solid var(--primary);
     }
 
-    .security-modal-secondary:hover {
-      background-color: rgba(59, 130, 246, 0.1);
+    .btn-secondary:hover {
+      background-color: rgba(37, 99, 235, 0.1);
     }
 
-    .security-resend-code {
+    .resend-code {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 15px;
       font-size: 0.9rem;
-      color: var(--gray);
     }
 
-    .security-resend-code a {
+    .resend-code a {
       color: var(--primary);
       text-decoration: none;
       font-weight: 500;
-      cursor: pointer;
     }
 
-    .security-resend-code a:hover {
+    .resend-code a:hover {
       text-decoration: underline;
     }
 
-    /* Password Reset Modal */
-    .security-reset-modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.8);
-      z-index: 1000;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(5px);
-    }
-
-    .security-reset-content {
-      background-color: white;
-      padding: 40px;
-      border-radius: var(--border-radius);
-      width: 90%;
-      max-width: 500px;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-      animation: modalFadeIn 0.3s;
-    }
-
-    .security-reset-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      color: var(--primary-dark);
-    }
-
-    .security-reset-steps {
-      margin-bottom: 20px;
-    }
-
-    .security-reset-step {
-      display: none;
-    }
-
-    .security-reset-step.active {
-      display: block;
-    }
-
-    .security-reset-step-title {
-      font-weight: 600;
-      margin-bottom: 15px;
-      color: var(--primary-dark);
-    }
-
-    .security-reset-step-text {
-      margin-bottom: 20px;
-      color: var(--gray);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    .security-reset-btns {
-      display: flex;
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    /* Activity Monitor */
-    .security-activity {
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
-      align-items: center;
+    /* Error message */
+    .error-message {
+      color: var(--danger);
       font-size: 0.8rem;
-      color: var(--gray);
+      margin-top: 5px;
+      display: none;
     }
 
-    .security-activity-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--secondary);
+    /* Loading spinner */
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
       border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
       margin-right: 8px;
-      animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
-      100% {
-        opacity: 1;
-      }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
 
     /* Responsive styles */
-    @media (max-width: 992px) {
-      .security-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .security-hero {
-        display: none;
-      }
-
-      .security-login {
-        padding: 40px;
-      }
-    }
-
     @media (max-width: 576px) {
-      .security-login {
-        padding: 30px 20px;
+      .login-container {
+        max-width: 100%;
       }
       
-      .security-login-title {
-        font-size: 1.5rem;
+      .login-header, .login-body {
+        padding: 20px;
       }
-
-      .security-modal-content, .security-reset-content {
-        padding: 30px 20px;
-      }
-
-      .security-code-input {
+      
+      .code-input {
         width: 40px;
-        height: 50px;
-        font-size: 1.2rem;
+        height: 40px;
+        font-size: 1rem;
       }
-    }
-
-    /* Animations */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-      20%, 40%, 60%, 80% { transform: translateX(5px); }
-    }
-
-    .security-shake {
-      animation: shake 0.5s;
-    }
-
-    /* Password strength meter */
-    .security-password-strength {
-      height: 4px;
-      background-color: var(--gray-light);
-      border-radius: 2px;
-      margin-top: 8px;
-      overflow: hidden;
-    }
-
-    .security-password-strength-bar {
-      height: 100%;
-      width: 0;
-      transition: var(--transition);
-    }
-
-    .security-password-rules {
-      margin-top: 10px;
-      font-size: 0.8rem;
-      color: var(--gray);
-    }
-
-    .security-password-rule {
-      display: flex;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-
-    .security-password-rule i {
-      margin-right: 5px;
-      font-size: 0.7rem;
-    }
-
-    .security-password-rule.valid {
-      color: var(--secondary);
-    }
-
-    .security-password-rule.invalid {
-      color: var(--gray);
     }
   </style>
 </head>
 <body>
-  <div class="security-container">
-    <div class="security-hero">
-      <div class="security-brand">
-        <div class="security-brand-icon">
-          <i class="fas fa-atom"></i>
-        </div>
-        <div class="security-brand-text">SiyaRam AI Lab</div>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="logo">
+        <i class="fas fa-atom logo-icon"></i>
+        <div class="logo-text">SiyaRam AI Lab</div>
       </div>
-      <h1 class="security-hero-title">Secure Research Portal</h1>
-      <p class="security-hero-subtitle">
-        Access cutting-edge AI research tools and laboratory management systems 
-        with enterprise-grade security protocols and multi-factor authentication.
-      </p>
-      
-      <div class="security-features">
-        <div class="security-feature">
-          <div class="security-feature-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <div class="security-feature-text">
-            Military-grade encryption with 256-bit SSL and multi-factor authentication
-          </div>
-        </div>
-        <div class="security-feature">
-          <div class="security-feature-icon">
-            <i class="fas fa-fingerprint"></i>
-          </div>
-          <div class="security-feature-text">
-            Biometric authentication support for enhanced security
-          </div>
-        </div>
-        <div class="security-feature">
-          <div class="security-feature-icon">
-            <i class="fas fa-clock"></i>
-          </div>
-          <div class="security-feature-text">
-            Session timeout after 15 minutes of inactivity
-          </div>
-        </div>
-      </div>
+      <h2 class="login-title">Secure Research Portal</h2>
+      <p class="login-subtitle">Sign in to access advanced AI research tools</p>
     </div>
-
-    <div class="security-login">
-      <div class="security-login-header">
-        <h2 class="security-login-title">Secure Authentication</h2>
-        <p class="security-login-subtitle">Enter your credentials to access the SiyaRam AI Lab portal</p>
-      </div>
-
-      <form id="securityLoginForm" class="security-form">
-        <div class="security-form-group">
-          <label for="securityUsername" class="security-form-label">Username</label>
-          <i class="fas fa-user security-input-icon"></i>
-          <input type="text" id="securityUsername" class="security-form-input" placeholder="Enter your username" required autocomplete="username">
+    
+    <div class="login-body">
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="username" class="form-label">Username</label>
+          <i class="fas fa-user input-icon"></i>
+          <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+          <div class="error-message" id="usernameError"></div>
         </div>
-
-        <div class="security-form-group">
-          <label for="securityPassword" class="security-form-label">Password</label>
-          <i class="fas fa-lock security-input-icon"></i>
-          <input type="password" id="securityPassword" class="security-form-input" placeholder="Enter your password" required autocomplete="current-password">
-          <i class="fas fa-eye security-password-toggle" id="securityTogglePassword"></i>
+        
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <i class="fas fa-lock input-icon"></i>
+          <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+          <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+          <div class="error-message" id="passwordError"></div>
         </div>
-
-        <div class="security-remember-forgot">
-          <div class="security-remember-me">
-            <input type="checkbox" id="securityRemember">
-            <label for="securityRemember">Remember this device</label>
+        
+        <div class="remember-forgot">
+          <div class="remember-me">
+            <input type="checkbox" id="remember">
+            <label for="remember">Remember me</label>
           </div>
-          <a class="security-forgot-password" id="securityForgotPassword">Forgot password?</a>
+          <a href="#" class="forgot-password" id="forgotPassword">Forgot password?</a>
         </div>
-
-        <div class="security-recaptcha">
+        
+        <div class="recaptcha-container">
           <div class="g-recaptcha" data-sitekey="6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></div>
         </div>
-
-        <button type="submit" class="security-submit-btn" id="securityLoginBtn">
-          <span id="securityLoginBtnText">Authenticate</span>
-          <i class="fas fa-lock" id="securityLoginBtnIcon" style="margin-left: 8px;"></i>
+        
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span id="loginBtnText">Sign In</span>
         </button>
-
-        <div class="security-divider">
-          <span class="security-divider-text">OR CONTINUE WITH</span>
-        </div>
-
-        <div class="security-social-login">
-          <button type="button" class="security-social-btn">
-            <i class="fab fa-google"></i>
-          </button>
-          <button type="button" class="security-social-btn">
-            <i class="fab fa-microsoft"></i>
-          </button>
-          <button type="button" class="security-social-btn">
-            <i class="fab fa-apple"></i>
-          </button>
-        </div>
-
-        <div class="security-footer">
-          Don't have access? <a href="#" id="securityRequestAccess">Request credentials</a>
-        </div>
-
-        <div class="security-info">
-          <i class="fas fa-info-circle"></i>
-          <span>This system is monitored for security purposes. Unauthorized access is prohibited.</span>
+        
+        <div class="login-footer">
+          Need access? <a href="#" id="requestAccess">Contact administrator</a>
         </div>
       </form>
-
-      <div class="security-activity">
-        <div class="security-activity-dot"></div>
-        <span>Secure connection established</span>
-      </div>
     </div>
   </div>
-
+  
   <!-- 2FA Verification Modal -->
-  <div id="securityTwoFactorModal" class="security-modal">
-    <div class="security-modal-content">
-      <span class="security-close-modal" id="securityCloseTwoFactor">&times;</span>
-      <h3 class="security-modal-title">Two-Factor Authentication</h3>
-      <p class="security-modal-subtitle">
-        We've sent a 6-digit verification code to <strong>sanatansingh000001@gmail.com</strong>. 
-        Please enter it below to complete your login.
-      </p>
+  <div id="twoFactorModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeTwoFactor">&times;</span>
+      <h3 class="modal-title">Two-Factor Authentication</h3>
+      <p class="modal-text">We've sent a 6-digit verification code to <strong>sanatansingh000001@gmail.com</strong>.</p>
       
-      <div class="security-code-inputs">
-        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
-        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+      <div class="code-inputs">
+        <input type="text" class="code-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input type="text" class="code-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input type="text" class="code-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input type="text" class="code-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input type="text" class="code-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
+        <input type="text" class="code-input" maxlength="1" inputmode="numeric" pattern="[0-9]">
       </div>
       
-      <button type="button" class="security-modal-btn security-modal-primary" id="securityVerify2FA">Verify Code</button>
-      <button type="button" class="security-modal-btn security-modal-secondary" id="securityCancel2FA">Cancel</button>
+      <button class="modal-btn btn-primary" id="verifyCode">Verify</button>
+      <button class="modal-btn btn-secondary" id="cancelTwoFactor">Cancel</button>
       
-      <div class="security-resend-code">
-        Didn't receive a code? <a href="#" id="securityResendCode">Resend code</a>
+      <div class="resend-code">
+        Didn't receive code? <a href="#" id="resendCode">Resend code</a>
       </div>
     </div>
   </div>
-
+  
   <!-- Password Reset Modal -->
-  <div id="securityResetModal" class="security-reset-modal">
-    <div class="security-reset-content">
-      <span class="security-close-modal" id="securityCloseReset">&times;</span>
-      <h3 class="security-reset-title">Reset Your Password</h3>
+  <div id="resetModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeReset">&times;</span>
+      <h3 class="modal-title">Reset Password</h3>
+      <p class="modal-text">Enter your username and security code to reset your password.</p>
       
-      <div class="security-reset-steps">
-        <div id="securityResetStep1" class="security-reset-step active">
-          <h4 class="security-reset-step-title">Step 1: Verify Your Identity</h4>
-          <p class="security-reset-step-text">
-            Enter your username and the security code provided by your administrator to verify your identity.
-          </p>
-          <div class="security-form-group">
-            <label for="securityResetUsername" class="security-form-label">Username</label>
-            <input type="text" id="securityResetUsername" class="security-form-input" placeholder="Your username">
-          </div>
-          <div class="security-form-group">
-            <label for="securityResetCode" class="security-form-label">Security Code</label>
-            <input type="text" id="securityResetCode" class="security-form-input" placeholder="Enter security code">
-          </div>
-          <div class="security-reset-btns">
-            <button id="securityResetNext" class="security-modal-btn security-modal-primary">Next</button>
-          </div>
-        </div>
-        
-        <div id="securityResetStep2" class="security-reset-step">
-          <h4 class="security-reset-step-title">Step 2: Set New Credentials</h4>
-          <p class="security-reset-step-text">
-            Create a strong new password following our security requirements. Your password must:
-          </p>
-          <div class="security-password-rules">
-            <div class="security-password-rule invalid" id="securityRuleLength">
-              <i class="fas fa-circle"></i>
-              <span>Be at least 12 characters long</span>
-            </div>
-            <div class="security-password-rule invalid" id="securityRuleUpper">
-              <i class="fas fa-circle"></i>
-              <span>Contain uppercase letters</span>
-            </div>
-            <div class="security-password-rule invalid" id="securityRuleLower">
-              <i class="fas fa-circle"></i>
-              <span>Contain lowercase letters</span>
-            </div>
-            <div class="security-password-rule invalid" id="securityRuleNumber">
-              <i class="fas fa-circle"></i>
-              <span>Contain numbers</span>
-            </div>
-            <div class="security-password-rule invalid" id="securityRuleSpecial">
-              <i class="fas fa-circle"></i>
-              <span>Contain special characters</span>
-            </div>
-          </div>
-          <div class="security-form-group">
-            <label for="securityNewPassword" class="security-form-label">New Password</label>
-            <input type="password" id="securityNewPassword" class="security-form-input" placeholder="New password">
-            <div class="security-password-strength">
-              <div class="security-password-strength-bar" id="securityPasswordStrength"></div>
-            </div>
-          </div>
-          <div class="security-form-group">
-            <label for="securityConfirmPassword" class="security-form-label">Confirm Password</label>
-            <input type="password" id="securityConfirmPassword" class="security-form-input" placeholder="Confirm password">
-          </div>
-          <div class="security-reset-btns">
-            <button id="securityResetBack" class="security-modal-btn security-modal-secondary">Back</button>
-            <button id="securityResetSubmit" class="security-modal-btn security-modal-primary">Reset Password</button>
-          </div>
-        </div>
-        
-        <div id="securityResetStep3" class="security-reset-step">
-          <h4 class="security-reset-step-title">Credentials Updated Successfully!</h4>
-          <p class="security-reset-step-text">
-            Your password has been successfully updated. You can now login with your new credentials.
-          </p>
-          <div class="security-reset-btns">
-            <button id="securityResetClose" class="security-modal-btn security-modal-primary">Close</button>
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="resetUsername" class="form-label">Username</label>
+        <input type="text" id="resetUsername" class="form-input" placeholder="Enter username">
+        <div class="error-message" id="resetUsernameError"></div>
       </div>
+      
+      <div class="form-group">
+        <label for="resetCode" class="form-label">Security Code</label>
+        <input type="text" id="resetCode" class="form-input" placeholder="Enter security code">
+        <div class="error-message" id="resetCodeError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="newPassword" class="form-label">New Password</label>
+        <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+        <div class="error-message" id="newPasswordError"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Confirm Password</label>
+        <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+        <div class="error-message" id="confirmPasswordError"></div>
+      </div>
+      
+      <button class="modal-btn btn-primary" id="submitReset">Reset Password</button>
+      <button class="modal-btn btn-secondary" id="cancelReset">Cancel</button>
     </div>
   </div>
 
   <script>
-    // Secure credential validation (in a real app, this would be server-side)
+    // Secure credentials (in a real app, this would be server-side)
     const SECURE_CREDENTIALS = {
       username: 'SiyaRam4811',
       password: 'Lab123@',
@@ -901,51 +496,48 @@
     };
 
     // DOM Elements
-    const loginForm = document.getElementById('securityLoginForm');
-    const usernameInput = document.getElementById('securityUsername');
-    const passwordInput = document.getElementById('securityPassword');
-    const togglePassword = document.getElementById('securityTogglePassword');
-    const forgotPasswordBtn = document.getElementById('securityForgotPassword');
-    const requestAccessBtn = document.getElementById('securityRequestAccess');
-    const loginBtn = document.getElementById('securityLoginBtn');
-    const loginBtnText = document.getElementById('securityLoginBtnText');
-    const loginBtnIcon = document.getElementById('securityLoginBtnIcon');
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const forgotPasswordBtn = document.getElementById('forgotPassword');
+    const requestAccessBtn = document.getElementById('requestAccess');
     
     // Modal elements
-    const twoFactorModal = document.getElementById('securityTwoFactorModal');
-    const closeTwoFactorBtn = document.getElementById('securityCloseTwoFactor');
-    const verify2FABtn = document.getElementById('securityVerify2FA');
-    const cancel2FABtn = document.getElementById('securityCancel2FA');
-    const resendCodeBtn = document.getElementById('securityResendCode');
-    const codeInputs = document.querySelectorAll('.security-code-input');
+    const twoFactorModal = document.getElementById('twoFactorModal');
+    const closeTwoFactorBtn = document.getElementById('closeTwoFactor');
+    const verifyCodeBtn = document.getElementById('verifyCode');
+    const cancelTwoFactorBtn = document.getElementById('cancelTwoFactor');
+    const resendCodeBtn = document.getElementById('resendCode');
+    const codeInputs = document.querySelectorAll('.code-input');
     
-    const resetModal = document.getElementById('securityResetModal');
-    const closeResetBtn = document.getElementById('securityCloseReset');
-    const resetNextBtn = document.getElementById('securityResetNext');
-    const resetBackBtn = document.getElementById('securityResetBack');
-    const resetSubmitBtn = document.getElementById('securityResetSubmit');
-    const resetCloseBtn = document.getElementById('securityResetClose');
-    const resetUsername = document.getElementById('securityResetUsername');
-    const resetCode = document.getElementById('securityResetCode');
-    const newPassword = document.getElementById('securityNewPassword');
-    const confirmPassword = document.getElementById('securityConfirmPassword');
-    const passwordStrength = document.getElementById('securityPasswordStrength');
-    const passwordRules = {
-      length: document.getElementById('securityRuleLength'),
-      upper: document.getElementById('securityRuleUpper'),
-      lower: document.getElementById('securityRuleLower'),
-      number: document.getElementById('securityRuleNumber'),
-      special: document.getElementById('securityRuleSpecial')
-    };
+    const resetModal = document.getElementById('resetModal');
+    const closeResetBtn = document.getElementById('closeReset');
+    const submitResetBtn = document.getElementById('submitReset');
+    const cancelResetBtn = document.getElementById('cancelReset');
+    const resetUsername = document.getElementById('resetUsername');
+    const resetCode = document.getElementById('resetCode');
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    // Error messages
+    const usernameError = document.getElementById('usernameError');
+    const passwordError = document.getElementById('passwordError');
+    const resetUsernameError = document.getElementById('resetUsernameError');
+    const resetCodeError = document.getElementById('resetCodeError');
+    const newPasswordError = document.getElementById('newPasswordError');
+    const confirmPasswordError = document.getElementById('confirmPasswordError');
     
     // Security variables
     let failedAttempts = 0;
     const MAX_ATTEMPTS = 5;
-    let twoFactorCode = generateRandomCode();
+    let twoFactorCode = '';
     let lastCodeSentTime = 0;
     const CODE_RESEND_DELAY = 30000; // 30 seconds
     
-    // Initialize the app
+    // Initialize
     document.addEventListener('DOMContentLoaded', function() {
       // Password toggle
       togglePassword.addEventListener('click', function() {
@@ -964,21 +556,19 @@
       // Request access
       requestAccessBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        alert('Please contact the lab administrator at admin@siyaramailab.com to request access credentials.');
+        alert('Please contact the lab administrator at admin@siyaramailab.com');
       });
       
       // Close modals
       closeTwoFactorBtn.addEventListener('click', closeTwoFactorModal);
-      cancel2FABtn.addEventListener('click', closeTwoFactorModal);
+      cancelTwoFactorBtn.addEventListener('click', closeTwoFactorModal);
       closeResetBtn.addEventListener('click', closeResetModal);
-      resetCloseBtn.addEventListener('click', closeResetModal);
+      cancelResetBtn.addEventListener('click', closeResetModal);
       
       // Window click to close modals
       window.addEventListener('click', function(e) {
-        if (e.target === twoFactorModal) {
+        if (e.target === twoFactorModal || e.target === resetModal) {
           closeTwoFactorModal();
-        }
-        if (e.target === resetModal) {
           closeResetModal();
         }
       });
@@ -1004,7 +594,7 @@
       });
       
       // Verify 2FA code
-      verify2FABtn.addEventListener('click', function() {
+      verifyCodeBtn.addEventListener('click', function() {
         const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
         
         if (enteredCode.length !== 6) {
@@ -1014,7 +604,6 @@
         
         if (enteredCode === twoFactorCode) {
           // Successful login - redirect to first page
-          alert('Authentication successful! Redirecting to dashboard...');
           window.location.href = 'first-page.html';
         } else {
           alert('Invalid verification code. Please try again.');
@@ -1047,50 +636,51 @@
         codeInputs[0].focus();
       });
       
-      // Password reset steps
-      resetNextBtn.addEventListener('click', function() {
+      // Submit password reset
+      submitResetBtn.addEventListener('click', function() {
+        let isValid = true;
+        
+        // Validate username
         if (resetUsername.value !== SECURE_CREDENTIALS.username) {
-          alert('Invalid username. Please try again.');
-          return;
+          resetUsernameError.textContent = 'Invalid username';
+          resetUsernameError.style.display = 'block';
+          isValid = false;
+        } else {
+          resetUsernameError.style.display = 'none';
         }
         
+        // Validate security code
         if (resetCode.value !== SECURE_CREDENTIALS.resetCode) {
-          alert('Invalid security code. Please try again.');
-          return;
+          resetCodeError.textContent = 'Invalid security code';
+          resetCodeError.style.display = 'block';
+          isValid = false;
+        } else {
+          resetCodeError.style.display = 'none';
         }
         
-        // Move to step 2
-        document.getElementById('securityResetStep1').classList.remove('active');
-        document.getElementById('securityResetStep2').classList.add('active');
-      });
-      
-      resetBackBtn.addEventListener('click', function() {
-        // Back to step 1
-        document.getElementById('securityResetStep2').classList.remove('active');
-        document.getElementById('securityResetStep1').classList.add('active');
-      });
-      
-      // Password strength checker
-      newPassword.addEventListener('input', checkPasswordStrength);
-      
-      // Submit new password
-      resetSubmitBtn.addEventListener('click', function() {
+        // Validate new password
+        if (newPassword.value.length < 8) {
+          newPasswordError.textContent = 'Password must be at least 8 characters';
+          newPasswordError.style.display = 'block';
+          isValid = false;
+        } else {
+          newPasswordError.style.display = 'none';
+        }
+        
+        // Validate password match
         if (newPassword.value !== confirmPassword.value) {
-          alert('Passwords do not match!');
-          return;
+          confirmPasswordError.textContent = 'Passwords do not match';
+          confirmPasswordError.style.display = 'block';
+          isValid = false;
+        } else {
+          confirmPasswordError.style.display = 'none';
         }
         
-        if (!isPasswordStrong(newPassword.value)) {
-          alert('Please make sure your password meets all the requirements.');
-          return;
+        if (isValid) {
+          // In a real app, you would send this to your server to update the password
+          alert('Password reset successfully! You can now login with your new password.');
+          closeResetModal();
         }
-        
-        // In a real app, you would send this to your server to update the password
-        console.log('Password reset to:', newPassword.value);
-        
-        // Move to success step
-        document.getElementById('securityResetStep2').classList.remove('active');
-        document.getElementById('securityResetStep3').classList.add('active');
       });
       
       // Form submission
@@ -1110,17 +700,20 @@
       
       // Check attempt limit
       if (failedAttempts >= MAX_ATTEMPTS) {
-        alert('Too many failed attempts. Your account has been temporarily locked. Please try again later or reset your password.');
+        alert('Too many failed attempts. Your account has been temporarily locked.');
         return;
       }
       
       const username = usernameInput.value;
       const password = passwordInput.value;
       
+      // Clear previous errors
+      usernameError.style.display = 'none';
+      passwordError.style.display = 'none';
+      
       // Show loading state
-      loginBtnText.textContent = 'Authenticating...';
-      loginBtnIcon.className = 'fas fa-spinner fa-spin';
       loginBtn.disabled = true;
+      loginBtnText.innerHTML = '<span class="spinner"></span> Authenticating...';
       
       // Simulate network delay
       setTimeout(() => {
@@ -1133,22 +726,31 @@
         } else {
           // Failed attempt
           failedAttempts++;
-          loginForm.classList.add('security-shake');
-          setTimeout(() => {
-            loginForm.classList.remove('security-shake');
-          }, 500);
+          
+          if (username !== SECURE_CREDENTIALS.username) {
+            usernameError.textContent = 'Invalid username';
+            usernameError.style.display = 'block';
+          }
+          
+          if (password !== SECURE_CREDENTIALS.password) {
+            passwordError.textContent = 'Invalid password';
+            passwordError.style.display = 'block';
+          }
           
           const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
-          alert(`Invalid credentials. ${attemptsLeft > 0 ? `${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining.` : 'No attempts remaining.'}`);
+          if (attemptsLeft > 0) {
+            alert(`Invalid credentials. ${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining.`);
+          } else {
+            alert('Account locked. Please reset your password.');
+          }
           
           // Reset reCAPTCHA
           grecaptcha.reset();
         }
         
         // Reset button state
-        loginBtnText.textContent = 'Authenticate';
-        loginBtnIcon.className = 'fas fa-lock';
         loginBtn.disabled = false;
+        loginBtnText.textContent = 'Sign In';
       }, 1500);
     }
     
@@ -1175,86 +777,24 @@
       twoFactorModal.style.display = 'none';
       // Clear all inputs
       codeInputs.forEach(input => input.value = '');
+      // Reset login button
+      loginBtn.disabled = false;
+      loginBtnText.textContent = 'Sign In';
     }
     
     // Close reset modal
     function closeResetModal() {
       resetModal.style.display = 'none';
-      // Reset all steps
-      document.querySelectorAll('.security-reset-step').forEach(step => {
-        step.classList.remove('active');
-      });
-      document.getElementById('securityResetStep1').classList.add('active');
       // Clear all inputs
       resetUsername.value = '';
       resetCode.value = '';
       newPassword.value = '';
       confirmPassword.value = '';
-      // Reset password strength
-      passwordStrength.style.width = '0%';
-      passwordStrength.style.backgroundColor = '';
-      // Reset rules
-      Object.values(passwordRules).forEach(rule => {
-        rule.classList.remove('valid');
-        rule.classList.add('invalid');
-      });
-    }
-    
-    // Check password strength
-    function checkPasswordStrength() {
-      const password = newPassword.value;
-      let strength = 0;
-      
-      // Length check (12+ characters)
-      const hasLength = password.length >= 12;
-      passwordRules.length.classList.toggle('valid', hasLength);
-      passwordRules.length.classList.toggle('invalid', !hasLength);
-      if (hasLength) strength += 20;
-      
-      // Uppercase check
-      const hasUpper = /[A-Z]/.test(password);
-      passwordRules.upper.classList.toggle('valid', hasUpper);
-      passwordRules.upper.classList.toggle('invalid', !hasUpper);
-      if (hasUpper) strength += 20;
-      
-      // Lowercase check
-      const hasLower = /[a-z]/.test(password);
-      passwordRules.lower.classList.toggle('valid', hasLower);
-      passwordRules.lower.classList.toggle('invalid', !hasLower);
-      if (hasLower) strength += 20;
-      
-      // Number check
-      const hasNumber = /[0-9]/.test(password);
-      passwordRules.number.classList.toggle('valid', hasNumber);
-      passwordRules.number.classList.toggle('invalid', !hasNumber);
-      if (hasNumber) strength += 20;
-      
-      // Special char check
-      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-      passwordRules.special.classList.toggle('valid', hasSpecial);
-      passwordRules.special.classList.toggle('invalid', !hasSpecial);
-      if (hasSpecial) strength += 20;
-      
-      // Update strength bar
-      passwordStrength.style.width = `${strength}%`;
-      
-      // Set color based on strength
-      if (strength < 60) {
-        passwordStrength.style.backgroundColor = var(--danger);
-      } else if (strength < 80) {
-        passwordStrength.style.backgroundColor = var(--warning);
-      } else {
-        passwordStrength.style.backgroundColor = var(--secondary);
-      }
-    }
-    
-    // Check if password meets all requirements
-    function isPasswordStrong(password) {
-      return password.length >= 12 &&
-             /[A-Z]/.test(password) &&
-             /[a-z]/.test(password) &&
-             /[0-9]/.test(password) &&
-             /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      // Clear errors
+      resetUsernameError.style.display = 'none';
+      resetCodeError.style.display = 'none';
+      newPasswordError.style.display = 'none';
+      confirmPasswordError.style.display = 'none';
     }
   </script>
 </body>

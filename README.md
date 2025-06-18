@@ -1,4 +1,4 @@
-also add two step verification using otp to '7260968719' and then enter to next page -<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">

@@ -1,0 +1,2599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Secure Portal | SiyaRam AI Lab</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <style>
+    :root {
+      --primary-dark: #0f172a;
+      --primary: #1e40af;
+      --primary-light: #3b82f6;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --light: #f8fafc;
+      --dark: #020617;
+      --gray: #64748b;
+      --gray-light: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --border-radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--primary-dark);
+      color: var(--light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-image: 
+        radial-gradient(at 80% 0%, hsla(189, 100%, 56%, 0.1) 0px, transparent 50%),
+        radial-gradient(at 0% 50%, hsla(355, 100%, 93%, 0.1) 0px, transparent 50%);
+    }
+
+    .security-container {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background-color: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .security-hero {
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(30, 64, 175, 0.7), rgba(16, 185, 129, 0.5)), 
+                  url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80') no-repeat center center;
+      background-size: cover;
+      position: relative;
+    }
+
+    .security-brand {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .security-brand-icon {
+      width: 50px;
+      height: 50px;
+      background-color: var(--light);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+
+    .security-brand-text {
+      font-size: 1.8rem;
+      font-weight: 700;
+      background: linear-gradient(to right, var(--light), var(--gray-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .security-hero-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .security-hero-subtitle {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    .security-features {
+      margin-top: 40px;
+    }
+
+    .security-feature {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .security-feature-icon {
+      width: 24px;
+      height: 24px;
+      background-color: var(--secondary);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-right: 15px;
+      color: var(--light);
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .security-feature-text {
+      font-size: 0.95rem;
+    }
+
+    .security-login {
+      padding: 60px;
+      background-color: var(--light);
+      color: var(--dark);
+      position: relative;
+    }
+
+    .security-login-header {
+      margin-bottom: 40px;
+    }
+
+    .security-login-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+
+    .security-login-subtitle {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .security-form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .security-form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .security-form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+
+    .security-form-input {
+      width: 100%;
+      padding: 14px 14px 14px 45px;
+      border: 1px solid var(--gray-light);
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: var(--transition);
+      background-color: white;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .security-form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      outline: none;
+    }
+
+    .security-input-icon {
+      position: absolute;
+      left: 15px;
+      top: 42px;
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    .security-password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 42px;
+      cursor: pointer;
+      color: var(--gray);
+      font-size: 1.1rem;
+    }
+
+    .security-remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+
+    .security-remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .security-remember-me input {
+      margin-right: 8px;
+      accent-color: var(--primary);
+    }
+
+    .security-forgot-password {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .security-forgot-password:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+
+    .security-recaptcha {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .security-submit-btn {
+      background: linear-gradient(to right, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 20px;
+      font-family: 'Inter', sans-serif;
+      box-shadow: var(--shadow);
+    }
+
+    .security-submit-btn:hover {
+      background: linear-gradient(to right, var(--primary-dark), var(--primary));
+      transform: translateY(-2px);
+    }
+
+    .security-divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .security-divider::before, .security-divider::after {
+      content: "";
+      flex: 1;
+      border-bottom: 1px solid var(--gray-light);
+    }
+
+    .security-divider-text {
+      padding: 0 15px;
+    }
+
+    .security-social-login {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .security-social-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      color: var(--dark);
+      border: 1px solid var(--gray-light);
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+
+    .security-social-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .security-footer {
+      text-align: center;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .security-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .security-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .security-info {
+      margin-top: 30px;
+      padding: 15px;
+      background-color: #f0f7ff;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      border-left: 4px solid var(--primary);
+    }
+
+    .security-info i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+
+    /* 2FA Modal */
+    .security-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .security-modal-content {
+      background-color: white;
+      padding: 40px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: modalFadeIn 0.3s;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .security-close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--gray);
+      transition: var(--transition);
+    }
+
+    .security-close-modal:hover {
+      color: var(--dark);
+    }
+
+    .security-modal-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+    }
+
+    .security-modal-subtitle {
+      margin-bottom: 20px;
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .security-code-inputs {
+      display: flex;
+      justify-content: space-between;
+      margin: 30px 0;
+    }
+
+    .security-code-input {
+      width: 50px;
+      height: 60px;
+      text-align: center;
+      font-size: 1.5rem;
+      border: 1px solid var(--gray-light);
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      transition: var(--transition);
+    }
+
+    .security-code-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+      outline: none;
+    }
+
+    .security-modal-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 15px;
+      border: none;
+    }
+
+    .security-modal-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .security-modal-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .security-modal-secondary {
+      background-color: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .security-modal-secondary:hover {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    .security-resend-code {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .security-resend-code a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .security-resend-code a:hover {
+      text-decoration: underline;
+    }
+
+    /* Password Reset Modal */
+    .security-reset-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .security-reset-content {
+      background-color: white;
+      padding: 40px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: modalFadeIn 0.3s;
+    }
+
+    .security-reset-title {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--primary-dark);
+    }
+
+    .security-reset-steps {
+      margin-bottom: 20px;
+    }
+
+    .security-reset-step {
+      display: none;
+    }
+
+    .security-reset-step.active {
+      display: block;
+    }
+
+    .security-reset-step-title {
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+    }
+
+    .security-reset-step-text {
+      margin-bottom: 20px;
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .security-reset-btns {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Activity Monitor */
+    .security-activity {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .security-activity-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--secondary);
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Password strength meter */
+    .security-password-strength {
+      height: 4px;
+      background-color: var(--gray-light);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .security-password-strength-bar {
+      height: 100%;
+      width: 0;
+      transition: var(--transition);
+    }
+
+    .security-password-rules {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--gray);
+    }
+
+    .security-password-rule {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .security-password-rule i {
+      margin-right: 5px;
+      font-size: 0.7rem;
+    }
+
+    .security-password-rule.valid {
+      color: var(--secondary);
+    }
+
+    .security-password-rule.invalid {
+      color: var(--gray);
+    }
+
+    /* Loading spinner */
+    .security-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Session timeout warning */
+    .security-timeout-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+
+    .security-timeout-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      animation: modalFadeIn 0.3s;
+    }
+
+    .security-timeout-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-dark);
+    }
+
+    .security-timeout-text {
+      margin-bottom: 25px;
+      color: var(--gray);
+      font-size: 1rem;
+    }
+
+    .security-timeout-countdown {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.2rem;
+    }
+
+    .security-timeout-btns {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    /* Editor Page Styles */
+    #editorPage {
+      display: none;
+      width: 100%;
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-lg);
+    }
+
+    #editorPage.dark-mode {
+      background-color: var(--primary-dark);
+      color: var(--light);
+    }
+
+    #editor {
+      height: 500px;
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--gray-light);
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    #output {
+      background-color: var(--dark);
+      color: var(--light);
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: pre-wrap;
+      margin-top: 20px;
+    }
+
+    #liveOutput {
+      width: 100%;
+      height: 400px;
+      border: 1px solid var(--gray-light);
+      margin-top: 15px;
+      border-radius: 8px;
+      background: white;
+    }
+
+    #visualizationOutput {
+      width: 100%;
+      height: 400px;
+      border: 1px solid var(--gray-light);
+      margin-top: 15px;
+      border-radius: 8px;
+      background: white;
+      display: none;
+    }
+
+    .badges {
+      margin-top: 20px;
+    }
+
+    .badge {
+      background-color: var(--secondary);
+      color: white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      margin: 5px;
+      font-size: 14px;
+      display: none;
+      box-shadow: var(--shadow);
+    }
+
+    .badge.show {
+      display: inline-block;
+      animation: badgePop 0.6s forwards;
+    }
+
+    @keyframes badgePop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* File Explorer Styles */
+    #fileExplorer {
+      border: 1px solid var(--gray-light);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    #fileExplorer.dark-mode {
+      background-color: rgba(15, 23, 42, 0.8);
+      border-color: var(--gray);
+    }
+
+    #fileList {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #fileList li {
+      padding: 8px 12px;
+      margin: 5px 0;
+      background: var(--light);
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--gray-light);
+    }
+
+    #fileList li.dark-mode {
+      background: var(--primary-dark);
+      border-color: var(--gray);
+      color: var(--light);
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .file-icon {
+      margin-right: 10px;
+      color: var(--secondary);
+    }
+
+    .file-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .file-action {
+      background: none;
+      border: none;
+      color: var(--gray);
+      cursor: pointer;
+      font-size: 14px;
+      padding: 2px 5px;
+    }
+
+    .file-action:hover {
+      color: var(--secondary);
+    }
+
+    .file-action.dark-mode {
+      color: var(--gray-light);
+    }
+
+    .file-action.dark-mode:hover {
+      color: var(--secondary);
+    }
+
+    #fileUploadArea {
+      border: 2px dashed var(--gray-light);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    #fileUploadArea:hover {
+      border-color: var(--secondary);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    #fileUploadArea.dark-mode {
+      border-color: var(--gray);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    #fileUploadArea.dark-mode:hover {
+      border-color: var(--secondary);
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    /* Console Styles */
+    #consoleContainer {
+      margin-top: 20px;
+      border: 1px solid var(--gray-light);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #consoleHeader {
+      background-color: var(--secondary);
+      color: white;
+      padding: 8px 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    #consoleBody {
+      background-color: var(--dark);
+      color: var(--light);
+      padding: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      max-height: 200px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    #consoleInput {
+      width: 100%;
+      background-color: var(--dark);
+      color: var(--light);
+      border: none;
+      border-top: 1px solid var(--gray);
+      padding: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 992px) {
+      .security-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .security-hero {
+        display: none;
+      }
+
+      .security-login {
+        padding: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #editorPage {
+        padding: 15px;
+      }
+      
+      #editor {
+        height: 400px;
+      }
+      
+      #liveOutput, #visualizationOutput {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .security-login {
+        padding: 30px 20px;
+      }
+      
+      .security-login-title {
+        font-size: 1.5rem;
+      }
+
+      .security-modal-content, .security-reset-content {
+        padding: 30px 20px;
+      }
+
+      .security-code-input {
+        width: 40px;
+        height: 50px;
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Animations */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+
+    .security-shake {
+      animation: shake 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Login Container -->
+  <div class="security-container">
+    <div class="security-hero">
+      <div class="security-brand">
+        <div class="security-brand-icon">
+          <i class="fas fa-atom"></i>
+        </div>
+        <div class="security-brand-text">SiyaRam AI Lab</div>
+      </div>
+      <h1 class="security-hero-title">Secure Research Portal</h1>
+      <p class="security-hero-subtitle">
+        Access cutting-edge AI research tools and laboratory management systems 
+        with enterprise-grade security protocols and multi-factor authentication.
+      </p>
+      
+      <div class="security-features">
+        <div class="security-feature">
+          <div class="security-feature-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <div class="security-feature-text">
+            Military-grade encryption with 256-bit SSL and multi-factor authentication
+          </div>
+        </div>
+        <div class="security-feature">
+          <div class="security-feature-icon">
+            <i class="fas fa-fingerprint"></i>
+          </div>
+          <div class="security-feature-text">
+            Biometric authentication support for enhanced security
+          </div>
+        </div>
+        <div class="security-feature">
+          <div class="security-feature-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="security-feature-text">
+            Session timeout after 15 minutes of inactivity
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="security-login">
+      <div class="security-login-header">
+        <h2 class="security-login-title">Secure Authentication</h2>
+        <p class="security-login-subtitle">Enter your credentials to access the SiyaRam AI Lab portal</p>
+      </div>
+
+      <form id="securityLoginForm" class="security-form">
+        <div class="security-form-group">
+          <label for="securityUsername" class="security-form-label">Username</label>
+          <i class="fas fa-user security-input-icon"></i>
+          <input type="text" id="securityUsername" class="security-form-input" placeholder="Enter your username" required autocomplete="username">
+        </div>
+
+        <div class="security-form-group">
+          <label for="securityPassword" class="security-form-label">Password</label>
+          <i class="fas fa-lock security-input-icon"></i>
+          <input type="password" id="securityPassword" class="security-form-input" placeholder="Enter your password" required autocomplete="current-password">
+          <i class="fas fa-eye security-password-toggle" id="securityTogglePassword"></i>
+          <div class="security-password-strength" id="securityLoginStrength" style="display: none;">
+            <div class="security-password-strength-bar"></div>
+          </div>
+        </div>
+
+        <div class="security-remember-forgot">
+          <div class="security-remember-me">
+            <input type="checkbox" id="securityRemember">
+            <label for="securityRemember">Remember this device</label>
+          </div>
+          <a class="security-forgot-password" id="securityForgotPassword">Forgot password?</a>
+        </div>
+
+        <div class="security-recaptcha">
+          <div class="g-recaptcha" data-sitekey="6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></div>
+        </div>
+
+        <button type="submit" class="security-submit-btn" id="securityLoginBtn">
+          <span id="securityLoginBtnText">Authenticate</span>
+          <i class="fas fa-lock" id="securityLoginBtnIcon"></i>
+        </button>
+
+        <div class="security-divider">
+          <span class="security-divider-text">OR CONTINUE WITH</span>
+        </div>
+
+        <div class="security-social-login">
+          <button type="button" class="security-social-btn">
+            <i class="fab fa-google"></i>
+          </button>
+          <button type="button" class="security-social-btn">
+            <i class="fab fa-microsoft"></i>
+          </button>
+          <button type="button" class="security-social-btn">
+            <i class="fab fa-apple"></i>
+          </button>
+        </div>
+
+        <div class="security-footer">
+          Don't have access? <a href="#" id="securityRequestAccess">Request credentials</a>
+        </div>
+
+        <div class="security-info">
+          <i class="fas fa-info-circle"></i>
+          <span>This system is monitored for security purposes. Unauthorized access is prohibited.</span>
+        </div>
+      </form>
+
+      <div class="security-activity">
+        <div class="security-activity-dot"></div>
+        <span>Secure connection established</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Editor Page (Hidden until login) -->
+  <div id="editorPage">
+    <h1>Welcome to SiyaRam AI Lab - Advanced Python Compiler</h1>
+    
+    <div id="fileExplorer">
+      <h3>File Explorer</h3>
+      <div id="fileUploadArea" onclick="document.getElementById('multiFileUpload').click()">
+        <p>Drag & drop files here or click to browse</p>
+        <input type="file" id="multiFileUpload" multiple style="display:none" onchange="handleFileUploads(event)" />
+      </div>
+      <ul id="fileList"></ul>
+    </div>
+
+    <div id="editor"></div>
+
+    <label for="userInput">Input (Optional):</label>
+    <textarea id="userInput" placeholder="Input your program here..."></textarea>
+
+    <div style="display:flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+      <button onclick="runCode()" id="runButton">Run Code (Ctrl+Enter/F5)</button>
+      <button onclick="downloadCode()">Download Code</button>
+      <button onclick="toggleMode()" id="toggleModeBtn">Switch to Dark Mode</button>
+    </div>
+
+    <h3>Output:</h3>
+    <pre id="output">Output will appear here...</pre>
+
+    <h3>Live Preview:</h3>
+    <iframe id="liveOutput" sandbox="allow-scripts allow-same-origin" title="Live Output"></iframe>
+    
+    <h3>Visualization Output:</h3>
+    <div id="visualizationOutput"></div>
+
+    <!-- Console for package installation -->
+    <div id="consoleContainer">
+      <div id="consoleHeader" onclick="toggleConsole()">
+        <span>Python Package Installer (Click to toggle)</span>
+        <span id="consoleToggle">+</span>
+      </div>
+      <div id="consoleBody">
+        <div id="consoleOutput"></div>
+        <input type="text" id="consoleInput" placeholder="Enter pip command (e.g., pip install numpy)" onkeydown="handleConsoleInput(event)" />
+      </div>
+    </div>
+
+    <div class="badges">
+      <span class="badge" id="badge1">🎉 First Code Run :)</span>
+      <span class="badge" id="badge2">🚀 Sky is not the limit!</span>
+      <span class="badge" id="badge3">🌟 Dreams keep you awake :)</span>
+      <span class="badge" id="badge4">📊 Data Science Wizard!</span>
+      <span class="badge" id="badge5">🤖 ML Expert with XGBoost!</span>
+    </div>
+  </div>
+
+  <!-- 2FA Verification Modal -->
+  <div id="securityTwoFactorModal" class="security-modal">
+    <div class="security-modal-content">
+      <span class="security-close-modal" id="securityCloseTwoFactor">&times;</span>
+      <h3 class="security-modal-title">Two-Factor Authentication</h3>
+      <p class="security-modal-subtitle">
+        We've sent a 6-digit verification code to <strong id="security2FAEmail">sanatansingh000001@gmail.com</strong>. 
+        Please enter it below to complete your login.
+      </p>
+      
+      <div class="security-code-inputs">
+        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+        <input type="text" class="security-code-input" maxlength="1" pattern="[0-9]" inputmode="numeric">
+      </div>
+      
+      <button type="button" class="security-modal-btn security-modal-primary" id="securityVerify2FA">
+        <span id="securityVerify2FAText">Verify Code</span>
+        <span id="securityVerify2FASpinner" class="security-spinner" style="display: none;"></span>
+      </button>
+      <button type="button" class="security-modal-btn security-modal-secondary" id="securityCancel2FA">Cancel</button>
+      
+      <div class="security-resend-code">
+        Didn't receive a code? <a href="#" id="securityResendCode">Resend code</a>
+        <span id="securityResendTimer" style="display: none;"> (wait <span id="securityResendSeconds">30</span>s)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Reset Modal -->
+  <div id="securityResetModal" class="security-reset-modal">
+    <div class="security-reset-content">
+      <span class="security-close-modal" id="securityCloseReset">&times;</span>
+      <h3 class="security-reset-title">Reset Your Password</h3>
+      
+      <div class="security-reset-steps">
+        <div id="securityResetStep1" class="security-reset-step active">
+          <h4 class="security-reset-step-title">Step 1: Verify Your Identity</h4>
+          <p class="security-reset-step-text">
+            Enter your username and the security code provided by your administrator to verify your identity.
+          </p>
+          <div class="security-form-group">
+            <label for="securityResetUsername" class="security-form-label">Username</label>
+            <input type="text" id="securityResetUsername" class="security-form-input" placeholder="Your username">
+          </div>
+          <div class="security-form-group">
+            <label for="securityResetCode" class="security-form-label">Security Code</label>
+            <input type="text" id="securityResetCode" class="security-form-input" placeholder="Enter security code">
+          </div>
+          <div class="security-reset-btns">
+            <button id="securityResetNext" class="security-modal-btn security-modal-primary">
+              <span id="securityResetNextText">Next</span>
+              <span id="securityResetNextSpinner" class="security-spinner" style="display: none;"></span>
+            </button>
+          </div>
+        </div>
+        
+        <div id="securityResetStep2" class="security-reset-step">
+          <h4 class="security-reset-step-title">Step 2: Set New Credentials</h4>
+          <p class="security-reset-step-text">
+            Create a strong new password following our security requirements. Your password must:
+          </p>
+          <div class="security-password-rules">
+            <div class="security-password-rule invalid" id="securityRuleLength">
+              <i class="fas fa-circle"></i>
+              <span>Be at least 12 characters long</span>
+            </div>
+            <div class="security-password-rule invalid" id="securityRuleUpper">
+              <i class="fas fa-circle"></i>
+              <span>Contain uppercase letters</span>
+            </div>
+            <div class="security-password-rule invalid" id="securityRuleLower">
+              <i class="fas fa-circle"></i>
+              <span>Contain lowercase letters</span>
+            </div>
+            <div class="security-password-rule invalid" id="securityRuleNumber">
+              <i class="fas fa-circle"></i>
+              <span>Contain numbers</span>
+            </div>
+            <div class="security-password-rule invalid" id="securityRuleSpecial">
+              <i class="fas fa-circle"></i>
+              <span>Contain special characters</span>
+            </div>
+          </div>
+          <div class="security-form-group">
+            <label for="securityNewPassword" class="security-form-label">New Password</label>
+            <input type="password" id="securityNewPassword" class="security-form-input" placeholder="New password">
+            <div class="security-password-strength">
+              <div class="security-password-strength-bar" id="securityPasswordStrength"></div>
+            </div>
+          </div>
+          <div class="security-form-group">
+            <label for="securityConfirmPassword" class="security-form-label">Confirm Password</label>
+            <input type="password" id="securityConfirmPassword" class="security-form-input" placeholder="Confirm password">
+          </div>
+          <div class="security-reset-btns">
+            <button id="securityResetBack" class="security-modal-btn security-modal-secondary">Back</button>
+            <button id="securityResetSubmit" class="security-modal-btn security-modal-primary">
+              <span id="securityResetSubmitText">Reset Password</span>
+              <span id="securityResetSubmitSpinner" class="security-spinner" style="display: none;"></span>
+            </button>
+          </div>
+        </div>
+        
+        <div id="securityResetStep3" class="security-reset-step">
+          <h4 class="security-reset-step-title">Credentials Updated Successfully!</h4>
+          <p class="security-reset-step-text">
+            Your password has been successfully updated. You can now login with your new credentials.
+          </p>
+          <div class="security-reset-btns">
+            <button id="securityResetClose" class="security-modal-btn security-modal-primary">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Session Timeout Warning -->
+  <div id="securityTimeoutModal" class="security-timeout-modal">
+    <div class="security-timeout-content">
+      <h3 class="security-timeout-title">Session About to Expire</h3>
+      <p class="security-timeout-text">
+        Your session will expire due to inactivity in <span class="security-timeout-countdown" id="securityTimeoutCountdown">2:00</span>.
+        Would you like to continue your session?
+      </p>
+      <div class="security-timeout-btns">
+        <button id="securityTimeoutContinue" class="security-modal-btn security-modal-primary">Continue Session</button>
+        <button id="securityTimeoutLogout" class="security-modal-btn security-modal-secondary">Log Out</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Secure credential validation (in a real app, this would be server-side with proper hashing)
+    const SECURE_CREDENTIALS = {
+      username: 'SiyaRam4811',
+      password: 'Lab123@',  // Note: In production, never store plain text passwords
+      passwordHash: '5f4dcc3b5aa765d61d8327deb882cf99', // MD5 hash of 'password' (for demo only)
+      resetCode: '4811',
+      twoFactorEmail: 'sanatansingh000001@gmail.com'
+    };
+
+    // Editor variables
+    let editor;
+    let runCount = 0;
+    const badgesUnlocked = new Set();
+    let pyodide;
+    let uploadedFiles = {}; // Store all uploaded files
+    let fileSystem = {}; // Simulated file system for Pyodide
+    let isDarkMode = false;
+
+    const defaultCodeMap = {
+      python3: `# Advanced Python with Data Science Support
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
+
+# Load sample data
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Create a DataFrame
+df = pd.DataFrame(X, columns=iris.feature_names)
+df['species'] = y
+
+# Basic statistics
+print("Data Summary:")
+print(df.describe())
+
+# Seaborn visualization
+sns.pairplot(df, hue='species')
+plt.title('Iris Dataset Pairplot')
+plt.show()
+
+# Machine learning examples
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Logistic Regression
+lr_model = LogisticRegression(max_iter=200)
+lr_model.fit(X_train, y_train)
+lr_accuracy = lr_model.score(X_test, y_test)
+print(f"\\nLogistic Regression accuracy: {lr_accuracy:.2f}")
+
+# XGBoost
+xgb_model = XGBClassifier()
+xgb_model.fit(X_train, y_train)
+xgb_accuracy = xgb_model.score(X_test, y_test)
+print(f"XGBoost accuracy: {xgb_accuracy:.2f}")
+
+# To use uploaded files:
+# df = pd.read_csv('data.csv')  # After uploading via the file explorer`,
+      java: `public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello, World!");
+  }
+}`,
+      javascript: `console.log("Hello, World!");`,
+      html: `<!DOCTYPE html>
+<html>
+<head>
+  <title>My Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    h1 {
+      color: #4CAF50;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hello, World!</h1>
+  <p>Welcome to your HTML preview</p>
+</body>
+</html>`,
+      css: `body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: #4CAF50;
+  text-align: center;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}`,
+      c: `#include <stdio.h>
+int main() {
+  printf("Hello, World!\\n");
+  return 0;
+}`,
+      cpp: `#include <iostream>
+using namespace std;
+int main() {
+  cout << "Hello, World!" << endl;
+  return 0;
+}`
+    };
+
+    // DOM Elements
+    const loginForm = document.getElementById('securityLoginForm');
+    const usernameInput = document.getElementById('securityUsername');
+    const passwordInput = document.getElementById('securityPassword');
+    const togglePassword = document.getElementById('securityTogglePassword');
+    const forgotPasswordBtn = document.getElementById('securityForgotPassword');
+    const requestAccessBtn = document.getElementById('securityRequestAccess');
+    const loginBtn = document.getElementById('securityLoginBtn');
+    const loginBtnText = document.getElementById('securityLoginBtnText');
+    const loginBtnIcon = document.getElementById('securityLoginBtnIcon');
+    const loginStrengthMeter = document.getElementById('securityLoginStrength');
+    
+    // Modal elements
+    const twoFactorModal = document.getElementById('securityTwoFactorModal');
+    const closeTwoFactorBtn = document.getElementById('securityCloseTwoFactor');
+    const verify2FABtn = document.getElementById('securityVerify2FA');
+    const verify2FAText = document.getElementById('securityVerify2FAText');
+    const verify2FASpinner = document.getElementById('securityVerify2FASpinner');
+    const cancel2FABtn = document.getElementById('securityCancel2FA');
+    const resendCodeBtn = document.getElementById('securityResendCode');
+    const resendTimer = document.getElementById('securityResendTimer');
+    const resendSeconds = document.getElementById('securityResendSeconds');
+    const codeInputs = document.querySelectorAll('.security-code-input');
+    const twoFactorEmail = document.getElementById('security2FAEmail');
+    
+    const resetModal = document.getElementById('securityResetModal');
+    const closeResetBtn = document.getElementById('securityCloseReset');
+    const resetNextBtn = document.getElementById('securityResetNext');
+    const resetNextText = document.getElementById('securityResetNextText');
+    const resetNextSpinner = document.getElementById('securityResetNextSpinner');
+    const resetBackBtn = document.getElementById('securityResetBack');
+    const resetSubmitBtn = document.getElementById('securityResetSubmit');
+    const resetSubmitText = document.getElementById('securityResetSubmitText');
+    const resetSubmitSpinner = document.getElementById('securityResetSubmitSpinner');
+    const resetCloseBtn = document.getElementById('securityResetClose');
+    const resetUsername = document.getElementById('securityResetUsername');
+    const resetCode = document.getElementById('securityResetCode');
+    const newPassword = document.getElementById('securityNewPassword');
+    const confirmPassword = document.getElementById('securityConfirmPassword');
+    const passwordStrength = document.getElementById('securityPasswordStrength');
+    const passwordRules = {
+      length: document.getElementById('securityRuleLength'),
+      upper: document.getElementById('securityRuleUpper'),
+      lower: document.getElementById('securityRuleLower'),
+      number: document.getElementById('securityRuleNumber'),
+      special: document.getElementById('securityRuleSpecial')
+    };
+    
+    // Session timeout elements
+    const timeoutModal = document.getElementById('securityTimeoutModal');
+    const timeoutCountdown = document.getElementById('securityTimeoutCountdown');
+    const timeoutContinueBtn = document.getElementById('securityTimeoutContinue');
+    const timeoutLogoutBtn = document.getElementById('securityTimeoutLogout');
+    
+    // Editor elements
+    const toggleModeBtn = document.getElementById('toggleModeBtn');
+    const fileUploadArea = document.getElementById('fileUploadArea');
+    
+    // Security variables
+    let failedAttempts = 0;
+    const MAX_ATTEMPTS = 5;
+    let twoFactorCode = '';
+    let lastCodeSentTime = 0;
+    const CODE_RESEND_DELAY = 30000; // 30 seconds
+    
+    // Session timeout variables
+    const SESSION_TIMEOUT = 900000; // 15 minutes in ms
+    const WARNING_TIMEOUT = 120000; // Show warning 2 minutes before timeout
+    let idleTime = 0;
+    let timeoutInterval;
+    let warningInterval;
+    let sessionTimeout;
+    
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      // Password toggle
+      togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+      });
+      
+      // Show password strength on focus
+      passwordInput.addEventListener('focus', function() {
+        loginStrengthMeter.style.display = 'block';
+      });
+      
+      // Hide password strength on blur if empty
+      passwordInput.addEventListener('blur', function() {
+        if (!this.value) {
+          loginStrengthMeter.style.display = 'none';
+        }
+      });
+      
+      // Check password strength in real-time
+      passwordInput.addEventListener('input', function() {
+        checkPasswordStrength(this.value, loginStrengthMeter.querySelector('.security-password-strength-bar'));
+      });
+      
+      // Forgot password
+      forgotPasswordBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        resetModal.style.display = 'flex';
+      });
+      
+      // Request access
+      requestAccessBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        alert('Please contact the lab administrator at admin@siyaramailab.com to request access credentials.');
+      });
+      
+      // Close modals
+      closeTwoFactorBtn.addEventListener('click', closeTwoFactorModal);
+      cancel2FABtn.addEventListener('click', closeTwoFactorModal);
+      closeResetBtn.addEventListener('click', closeResetModal);
+      resetCloseBtn.addEventListener('click', closeResetModal);
+      
+      // Window click to close modals
+      window.addEventListener('click', function(e) {
+        if (e.target === twoFactorModal) {
+          closeTwoFactorModal();
+        }
+        if (e.target === resetModal) {
+          closeResetModal();
+        }
+        if (e.target === timeoutModal) {
+          // Don't close on overlay click for timeout modal
+        }
+      });
+      
+      // Code input handling
+      codeInputs.forEach((input, index) => {
+        // Allow only numbers
+        input.addEventListener('input', function() {
+          this.value = this.value.replace(/[^0-9]/g, '');
+          
+          // Auto-focus next input
+          if (this.value.length === 1 && index < codeInputs.length - 1) {
+            codeInputs[index + 1].focus();
+          }
+        });
+        
+        // Handle backspace
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+            codeInputs[index - 1].focus();
+          }
+        });
+      });
+      
+      // Verify 2FA code
+      verify2FABtn.addEventListener('click', function() {
+        const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+        
+        if (enteredCode.length !== 6) {
+          alert('Please enter the full 6-digit code.');
+          return;
+        }
+        
+        // Show loading state
+        verify2FAText.textContent = 'Verifying...';
+        verify2FASpinner.style.display = 'inline-block';
+        verify2FABtn.disabled = true;
+        
+        // Simulate network delay
+        setTimeout(() => {
+          if (enteredCode === twoFactorCode) {
+            // Successful login - show editor page
+            document.querySelector('.security-container').style.display = 'none';
+            document.getElementById('editorPage').style.display = 'block';
+            initializeEditor();
+            initializePyodide();
+          } else {
+            alert('Invalid verification code. Please try again.');
+            // Clear all inputs
+            codeInputs.forEach(input => input.value = '');
+            // Focus first input
+            codeInputs[0].focus();
+          }
+          
+          // Reset button state
+          verify2FAText.textContent = 'Verify Code';
+          verify2FASpinner.style.display = 'none';
+          verify2FABtn.disabled = false;
+        }, 1000);
+      });
+      
+      // Resend 2FA code
+      resendCodeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const currentTime = Date.now();
+        
+        if (currentTime - lastCodeSentTime < CODE_RESEND_DELAY) {
+          const secondsLeft = Math.ceil((CODE_RESEND_DELAY - (currentTime - lastCodeSentTime)) / 1000);
+          alert(`Please wait ${secondsLeft} seconds before requesting a new code.`);
+          return;
+        }
+        
+        twoFactorCode = generateRandomCode();
+        lastCodeSentTime = currentTime;
+        sendTwoFactorEmail(twoFactorCode);
+        alert(`A new verification code has been sent to ${SECURE_CREDENTIALS.twoFactorEmail}`);
+        
+        // Start resend timer
+        startResendTimer();
+        
+        // Clear all inputs
+        codeInputs.forEach(input => input.value = '');
+        // Focus first input
+        codeInputs[0].focus();
+      });
+      
+      // Password reset steps
+      resetNextBtn.addEventListener('click', function() {
+        if (!resetUsername.value) {
+          alert('Please enter your username.');
+          return;
+        }
+        
+        if (!resetCode.value) {
+          alert('Please enter the security code.');
+          return;
+        }
+        
+        // Show loading state
+        resetNextText.textContent = 'Verifying...';
+        resetNextSpinner.style.display = 'inline-block';
+        resetNextBtn.disabled = true;
+        
+        // Simulate verification delay
+        setTimeout(() => {
+          if (resetUsername.value !== SECURE_CREDENTIALS.username) {
+            alert('Invalid username. Please try again.');
+            resetNextText.textContent = 'Next';
+            resetNextSpinner.style.display = 'none';
+            resetNextBtn.disabled = false;
+            return;
+          }
+          
+          if (resetCode.value !== SECURE_CREDENTIALS.resetCode) {
+            alert('Invalid security code. Please try again.');
+            resetNextText.textContent = 'Next';
+            resetNextSpinner.style.display = 'none';
+            resetNextBtn.disabled = false;
+            return;
+          }
+          
+          // Move to step 2
+          document.getElementById('securityResetStep1').classList.remove('active');
+          document.getElementById('securityResetStep2').classList.add('active');
+          
+          // Reset button state
+          resetNextText.textContent = 'Next';
+          resetNextSpinner.style.display = 'none';
+          resetNextBtn.disabled = false;
+        }, 1000);
+      });
+      
+      resetBackBtn.addEventListener('click', function() {
+        // Back to step 1
+        document.getElementById('securityResetStep2').classList.remove('active');
+        document.getElementById('securityResetStep1').classList.add('active');
+      });
+      
+      // Password strength checker
+      newPassword.addEventListener('input', function() {
+        checkPasswordStrength(this.value, passwordStrength);
+        validatePasswordRules(this.value);
+      });
+      
+      // Submit new password
+      resetSubmitBtn.addEventListener('click', function() {
+        if (!newPassword.value) {
+          alert('Please enter a new password.');
+          return;
+        }
+        
+        if (!confirmPassword.value) {
+          alert('Please confirm your new password.');
+          return;
+        }
+        
+        if (newPassword.value !== confirmPassword.value) {
+          alert('Passwords do not match!');
+          return;
+        }
+        
+        if (!isPasswordStrong(newPassword.value)) {
+          alert('Please make sure your password meets all the requirements.');
+          return;
+        }
+        
+        // Show loading state
+        resetSubmitText.textContent = 'Updating...';
+        resetSubmitSpinner.style.display = 'inline-block';
+        resetSubmitBtn.disabled = true;
+        
+        // Simulate password update delay
+        setTimeout(() => {
+          // In a real app, you would send this to your server to update the password
+          console.log('Password reset to:', newPassword.value);
+          
+          // Move to success step
+          document.getElementById('securityResetStep2').classList.remove('active');
+          document.getElementById('securityResetStep3').classList.add('active');
+          
+          // Reset button state
+          resetSubmitText.textContent = 'Reset Password';
+          resetSubmitSpinner.style.display = 'none';
+          resetSubmitBtn.disabled = false;
+        }, 1500);
+      });
+      
+      // Form submission
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleLogin();
+      });
+      
+      // Session timeout handlers
+      timeoutContinueBtn.addEventListener('click', resetSessionTimer);
+      timeoutLogoutBtn.addEventListener('click', function() {
+        alert('You have been logged out due to inactivity.');
+        window.location.reload();
+      });
+      
+      // Track user activity
+      document.addEventListener('mousemove', resetSessionTimer);
+      document.addEventListener('keypress', resetSessionTimer);
+      document.addEventListener('click', resetSessionTimer);
+      document.addEventListener('scroll', resetSessionTimer);
+      
+      // Initialize session timer
+      resetSessionTimer();
+      
+      // Set 2FA email in modal
+      twoFactorEmail.textContent = SECURE_CREDENTIALS.twoFactorEmail;
+      
+      // Editor keyboard shortcuts
+      document.addEventListener("keydown", e => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter" || e.key === "F5") {
+          if (document.activeElement !== editor.textInput.getElement()) {
+            e.preventDefault();
+            runCode();
+            editor.focus();
+          }
+        }
+      });
+      
+      // Handle drag and drop for files
+      fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.style.borderColor = '#4CAF50';
+        fileUploadArea.style.backgroundColor = isDarkMode ? 'rgba(139, 195, 74, 0.2)' : 'rgba(76, 175, 80, 0.1)';
+      });
+      
+      fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.style.borderColor = isDarkMode ? '#555' : '#ccc';
+        fileUploadArea.style.backgroundColor = isDarkMode ? 'rgba(85, 85, 85, 0.2)' : 'rgba(76, 175, 80, 0.05)';
+      });
+      
+      fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.style.borderColor = isDarkMode ? '#555' : '#ccc';
+        fileUploadArea.style.backgroundColor = isDarkMode ? 'rgba(85, 85, 85, 0.2)' : 'rgba(76, 175, 80, 0.05)';
+        
+        if (e.dataTransfer.files.length > 0) {
+          const fakeEvent = { target: { files: e.dataTransfer.files } };
+          handleFileUploads(fakeEvent);
+        }
+      });
+    });
+    
+    // Handle login
+    function handleLogin() {
+      // Check reCAPTCHA first
+      if (grecaptcha.getResponse().length === 0) {
+        alert('Please complete the reCAPTCHA verification.');
+        return;
+      }
+      
+      // Check attempt limit
+      if (failedAttempts >= MAX_ATTEMPTS) {
+        alert('Too many failed attempts. Your account has been temporarily locked. Please try again later or reset your password.');
+        return;
+      }
+      
+      const username = usernameInput.value;
+      const password = passwordInput.value;
+      
+      if (!username || !password) {
+        alert('Please enter both username and password.');
+        return;
+      }
+      
+      // Show loading state
+      loginBtnText.textContent = 'Authenticating...';
+      loginBtnIcon.className = 'fas fa-spinner fa-spin';
+      loginBtn.disabled = true;
+      
+      // Simulate network delay
+      setTimeout(() => {
+        // In a real app, this would be a server-side check with proper password hashing
+        if (username === SECURE_CREDENTIALS.username && md5(password) === SECURE_CREDENTIALS.passwordHash) {
+          // Successful first factor auth - proceed to 2FA
+          twoFactorCode = generateRandomCode();
+          lastCodeSentTime = Date.now();
+          sendTwoFactorEmail(twoFactorCode);
+          openTwoFactorModal();
+          
+          // Start resend timer
+          startResendTimer();
+        } else {
+          // Failed attempt
+          failedAttempts++;
+          loginForm.classList.add('security-shake');
+          setTimeout(() => {
+            loginForm.classList.remove('security-shake');
+          }, 500);
+          
+          const attemptsLeft = MAX_ATTEMPTS - failedAttempts;
+          alert(`Invalid credentials. ${attemptsLeft > 0 ? `${attemptsLeft} attempt${attemptsLeft > 1 ? 's' : ''} remaining.` : 'No attempts remaining.'}`);
+          
+          // Reset reCAPTCHA
+          grecaptcha.reset();
+        }
+        
+        // Reset button state
+        loginBtnText.textContent = 'Authenticate';
+        loginBtnIcon.className = 'fas fa-lock';
+        loginBtn.disabled = false;
+      }, 1500);
+    }
+    
+    // Initialize the code editor
+    function initializeEditor() {
+      editor = ace.edit("editor");
+      editor.setTheme(isDarkMode ? "ace/theme/monokai" : "ace/theme/github");
+      editor.session.setMode("ace/mode/python");
+      editor.setOptions({
+        fontSize: "16pt",
+        fontFamily: "'JetBrains Mono', monospace",
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        wrap: true,
+      });
+
+      editor.setValue(defaultCodeMap["python3"], -1);
+
+      // Add keyboard shortcuts
+      editor.commands.addCommand({
+        name: "runCodeShortcut",
+        bindKey: { win: "Ctrl-Enter|F5", mac: "Command-Enter|F5" },
+        exec: function(editor) {
+          runCode();
+          editor.focus();
+        }
+      });
+
+      // Fix Ctrl+/ comment behavior
+      editor.commands.addCommand({
+        name: "toggleComment",
+        bindKey: { win: "Ctrl-/", mac: "Command-/" },
+        exec: function(editor) {
+          editor.toggleCommentLines();
+        },
+        multiSelectAction: "forEachLine"
+      });
+    }
+    
+    // Initialize Pyodide (Python in the browser)
+    async function initializePyodide() {
+      console.log("Loading Pyodide...");
+      const runButton = document.getElementById('runButton');
+      const originalText = runButton.textContent;
+      runButton.innerHTML = '<span class="security-spinner"></span> Loading Python...';
+      runButton.disabled = true;
+      
+      try {
+        pyodide = await loadPyodide({
+          indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.4/full/"
+        });
+        
+        // Load essential packages first
+        await pyodide.loadPackage(["micropip", "numpy", "matplotlib"]);
+        
+        // Then use micropip to install other packages including xgboost
+        try {
+          await pyodide.runPythonAsync(`
+            import micropip
+            await micropip.install(['pandas', 'scikit-learn', 'seaborn', 'statsmodels', 'plotly', 'scipy', 'xgboost'])
+          `);
+          console.log("All packages loaded successfully");
+        } catch (err) {
+          console.error("Error loading some packages:", err);
+        }
+        
+        // Initialize the file system in Pyodide
+        await pyodide.runPythonAsync(`
+          import io, sys, base64
+          import js
+          
+          # Set up stdout redirection
+          sys.stdout = io.StringIO()
+          
+          # File system simulation functions
+          def read_file(filename, mode='r'):
+              file_system = js.fileSystem.to_py()
+              if filename in file_system:
+                  content = file_system[filename]
+                  if 'b' in mode:
+                      return io.BytesIO(content.encode('latin1') if isinstance(content, str) else content)
+                  else:
+                      return io.StringIO(content if isinstance(content, str) else content.decode('utf-8'))
+              raise FileNotFoundError(f"File {filename} not found in virtual file system")
+          
+          def write_file(filename, content, mode='w'):
+              file_system = js.fileSystem.to_py()
+              if 'b' in mode:
+                  file_system[filename] = content.getvalue() if hasattr(content, 'getvalue') else content
+              else:
+                  file_system[filename] = content.getvalue() if hasattr(content, 'getvalue') else str(content)
+          
+          # Patch open() to use our virtual file system
+          _original_open = open
+          def open(filename, mode='r', *args, **kwargs):
+              if filename.startswith('/') or ':' in filename:
+                  return _original_open(filename, mode, *args, **kwargs)
+              return read_file(filename, mode)
+          
+          # Make pandas read_csv work with our file system
+          import pandas as pd
+          _original_read_csv = pd.read_csv
+          def read_csv(filepath_or_buffer, *args, **kwargs):
+              if isinstance(filepath_or_buffer, str) and not filepath_or_buffer.startswith(('http://', 'https://')):
+                  return _original_read_csv(read_file(filepath_or_buffer), *args, **kwargs)
+              return _original_read_csv(filepath_or_buffer, *args, **kwargs)
+          pd.read_csv = read_csv
+        `);
+        
+        console.log("Pyodide initialized successfully");
+      } catch (error) {
+        console.error("Pyodide initialization failed:", error);
+        document.getElementById("output").textContent = "Error initializing Python environment: " + error.message;
+      } finally {
+        runButton.textContent = originalText;
+        runButton.disabled = false;
+      }
+    }
+    
+    // Run the code in the editor
+    async function runCode() {
+      const code = editor.getValue();
+      const output = document.getElementById("output");
+      output.textContent = "Running...";
+      runCount++;
+
+      // Auto-scroll to output
+      output.scrollIntoView({ behavior: 'smooth' });
+
+      // Reset outputs
+      document.getElementById("visualizationOutput").style.display = "none";
+      document.getElementById("liveOutput").style.display = "none";
+      
+      // Enhanced plot detection
+      const isPlottingCode = code.includes("import matplotlib") || 
+            code.includes("from matplotlib") || 
+            code.includes("plt.") || 
+            code.includes("plt.show()") ||
+            code.includes(".plot(") ||
+            code.includes(".hist(") ||
+            code.includes(".scatter(") ||
+            code.includes(".bar(") ||
+            code.includes(".imshow(") ||
+            code.includes("import seaborn") ||
+            code.includes("sns.") ||
+            code.includes("sns.set(") ||
+            code.includes("from sklearn") ||
+            code.includes("import statsmodels") ||
+            code.includes("import plotly") ||
+            code.includes("import xgboost") ||
+            code.includes("from xgboost");
+      
+      if (isPlottingCode) {
+          try {
+              if (!pyodide) {
+                  output.textContent = "Python environment is still loading. Please wait a moment and try again.";
+                  return;
+              }
+              
+              // Make the file system available to Pyodide
+              window.fileSystem = fileSystem;
+              
+              const visOutput = document.getElementById("visualizationOutput");
+              visOutput.innerHTML = "";
+              visOutput.style.display = "block";
+              
+              // Prepare the Python environment
+              await pyodide.runPythonAsync(`
+                  import matplotlib.pyplot as plt
+                  import io, base64
+                  import sys
+                  import numpy as np
+                  import pandas as pd
+                  
+                  # Redirect stdout to capture print output
+                  sys.stdout = mystdout = io.StringIO()
+                  
+                  def show_plot():
+                      buf = io.BytesIO()
+                      plt.savefig(buf, format='png', bbox_inches='tight')
+                      buf.seek(0)
+                      img = buf.getvalue()
+                      plt.clf()
+                      plt.close()
+                      return img
+              `);
+              
+              // Run the user's code
+              try {
+                  await pyodide.runPythonAsync(code);
+                  
+                  // Get any text output
+                  const textOutput = pyodide.runPython("mystdout.getvalue()");
+                  
+                  // Try to get any plot that was created
+                  let plotOutput = "";
+                  try {
+                      const imgData = await pyodide.runPythonAsync("show_plot()");
+                      const imgStr = pyodide.runPython(`
+                          import base64
+                          base64.b64encode(${imgData}).decode('utf-8')
+                      `);
+                      visOutput.innerHTML = `<img src="data:image/png;base64,${imgStr}" alt="Plot output">`;
+                      plotOutput = "\n\nPlot generated successfully!";
+                      
+                      // Check if this is a data science operation
+                      if (code.includes("pd.read_csv") || code.includes("sns.") || code.includes("fit(")) {
+                          if (!badgesUnlocked.has("datascience")) {
+                              showBadge("badge4");
+                              badgesUnlocked.add("datascience");
+                          }
+                      }
+                      
+                      // Check for XGBoost usage
+                      if (code.includes("import xgboost") || code.includes("from xgboost") || code.includes("XGB")) {
+                          if (!badgesUnlocked.has("xgboost")) {
+                              showBadge("badge5");
+                              badgesUnlocked.add("xgboost");
+                          }
+                      }
+                  } catch (plotError) {
+                      // No plot was generated
+                  }
+                  
+                  // Restore stdout
+                  pyodide.runPython("sys.stdout = sys.__stdout__");
+                  
+                  // Display combined output
+                  output.textContent = (textOutput || "Code executed with no text output") + plotOutput;
+                  
+              } catch (err) {
+                  pyodide.runPython("sys.stdout = sys.__stdout__");
+                  output.textContent = "Python Error: " + err.message;
+                  console.error(err);
+              }
+          } catch (err) {
+              output.textContent = "Initialization Error: " + err.message;
+              console.error(err);
+          }
+          
+          handleAchievements();
+          return;
+      }
+
+      // Regular code execution for non-plotting cases
+      try {
+          const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  language: "python3",
+                  version: "*",
+                  files: [{ content: code }],
+                  stdin: document.getElementById("userInput").value
+              })
+          });
+          const result = await response.json();
+
+          if (result.run) {
+              output.textContent = result.run.stdout || result.run.stderr || "No output";
+          } else if(result.message) {
+              output.textContent = "Error: " + result.message;
+          } else {
+              output.textContent = "Unknown error occurred.";
+          }
+      } catch (err) {
+          output.textContent = "Error: " + err.message;
+      }
+
+      handleAchievements();
+    }
+    
+    // Toggle dark/light mode
+    function toggleMode() {
+      isDarkMode = !isDarkMode;
+      document.body.classList.toggle("dark-mode", isDarkMode);
+      document.getElementById("editorPage").classList.toggle("dark-mode", isDarkMode);
+      document.getElementById("fileExplorer").classList.toggle("dark-mode", isDarkMode);
+      document.getElementById("consoleHeader").classList.toggle("dark-mode", isDarkMode);
+      toggleModeBtn.textContent = isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode";
+
+      // Update file list items
+      const fileItems = document.querySelectorAll('#fileList li');
+      fileItems.forEach(item => {
+        item.classList.toggle('dark-mode', isDarkMode);
+      });
+
+      // Update file action buttons
+      const fileActions = document.querySelectorAll('.file-action');
+      fileActions.forEach(action => {
+        action.classList.toggle('dark-mode', isDarkMode);
+      });
+
+      if (editor) {
+        editor.setTheme(isDarkMode ? "ace/theme/monokai" : "ace/theme/github");
+      }
+    }
+    
+    // Download the current code
+    function downloadCode() {
+      const code = editor.getValue();
+      const blob = new Blob([code], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `code.py`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    
+    // Handle file uploads
+    function handleFileUploads(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const fileName = file.name;
+          
+          if (file.type.startsWith("image/")) {
+            // Handle images
+            uploadedFiles[fileName] = {
+              name: fileName,
+              type: file.type,
+              size: file.size,
+              content: e.target.result
+            };
+            fileSystem[fileName] = e.target.result.split(',')[1];
+          } else if (file.type === "text/csv" || fileName.endsWith('.csv')) {
+            // Handle CSV files
+            uploadedFiles[fileName] = {
+              name: fileName,
+              type: file.type,
+              size: file.size,
+              content: e.target.result
+            };
+            fileSystem[fileName] = e.target.result;
+          } else {
+            // Handle other text files
+            uploadedFiles[fileName] = {
+              name: fileName,
+              type: file.type,
+              size: file.size,
+              content: e.target.result
+            };
+            fileSystem[fileName] = e.target.result;
+          }
+          
+          updateFileList();
+        };
+
+        if (file.type.startsWith("image/")) {
+          reader.readAsDataURL(file);
+        } else {
+          reader.readAsText(file);
+        }
+      }
+      
+      event.target.value = "";
+    }
+    
+    // Update the file list display
+    function updateFileList() {
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = "";
+      
+      for (const fileName in uploadedFiles) {
+        const file = uploadedFiles[fileName];
+        const listItem = document.createElement('li');
+        if (isDarkMode) listItem.classList.add('dark-mode');
+        
+        const fileExt = fileName.split('.').pop().toLowerCase();
+        const icon = getFileIcon(fileExt, file.type);
+        
+        listItem.innerHTML = `
+          <div class="file-item">
+            <span class="file-icon">${icon}</span>
+            <span>${fileName} (${formatFileSize(file.size)})</span>
+          </div>
+          <div class="file-actions">
+            <button class="file-action ${isDarkMode ? 'dark-mode' : ''}" onclick="previewFile('${fileName}')" title="Preview">👁️</button>
+            <button class="file-action ${isDarkMode ? 'dark-mode' : ''}" onclick="downloadFile('${fileName}')" title="Download">⤵️</button>
+            <button class="file-action ${isDarkMode ? 'dark-mode' : ''}" onclick="deleteFile('${fileName}')" title="Delete">❌</button>
+          </div>
+        `;
+        fileList.appendChild(listItem);
+      }
+    }
+    
+    // Get appropriate icon for file type
+    function getFileIcon(ext, type) {
+      const icons = {
+        'jpg': '🖼️', 'jpeg': '🖼️', 'png': '🖼️', 'gif': '🖼️', 'svg': '🖼️',
+        'csv': '📊', 'xls': '📊', 'xlsx': '📊',
+        'txt': '📄', 'pdf': '📄',
+        'py': '🐍', 'js': '📜', 'java': '☕', 'html': '🌐', 'css': '🎨',
+        'c': '🔧', 'cpp': '🔧'
+      };
+      
+      if (type.startsWith('image/')) return '🖼️';
+      if (type === 'text/csv') return '📊';
+      
+      return icons[ext] || '📁';
+    }
+    
+    // Format file size for display
+    function formatFileSize(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+    }
+    
+    // Preview a file
+    function previewFile(fileName) {
+      const file = uploadedFiles[fileName];
+      if (!file) return;
+      
+      if (file.type.startsWith('image/')) {
+        alert(`Image preview for ${fileName} is available in the file explorer.`);
+      } else {
+        alert(`File preview for ${fileName}:\n\n${file.content.substring(0, 1000)}${file.content.length > 1000 ? '...' : ''}`);
+      }
+    }
+    
+    // Download a specific file
+    function downloadFile(fileName) {
+      const file = uploadedFiles[fileName];
+      if (!file) return;
+      
+      let blob;
+      if (file.type.startsWith('image/')) {
+        const base64Data = file.content.split(',')[1];
+        const byteCharacters = atob(base64Data);
+        const byteArrays = [];
+        
+        for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+          const slice = byteCharacters.slice(offset, offset + 512);
+          const byteNumbers = new Array(slice.length);
+          
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+          
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+        
+        blob = new Blob(byteArrays, { type: file.type });
+      } else {
+        blob = new Blob([file.content], { type: file.type });
+      }
+      
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+    
+    // Delete a file
+    function deleteFile(fileName) {
+      if (confirm(`Are you sure you want to delete ${fileName}?`)) {
+        delete uploadedFiles[fileName];
+        delete fileSystem[fileName];
+        updateFileList();
+      }
+    }
+    
+    // Toggle the console visibility
+    function toggleConsole() {
+      const consoleBody = document.getElementById('consoleBody');
+      const consoleToggle = document.getElementById('consoleToggle');
+      
+      if (consoleBody.style.display === 'none' || !consoleBody.style.display) {
+        consoleBody.style.display = 'block';
+        consoleToggle.textContent = '-';
+        document.getElementById('consoleInput').focus();
+      } else {
+        consoleBody.style.display = 'none';
+        consoleToggle.textContent = '+';
+      }
+    }
+    
+    // Handle console input for package installation
+    async function handleConsoleInput(event) {
+      if (event.key !== 'Enter') return;
+      
+      const input = document.getElementById('consoleInput');
+      const command = input.value.trim();
+      input.value = '';
+      
+      if (!command) return;
+      
+      const consoleOutput = document.getElementById('consoleOutput');
+      consoleOutput.innerHTML += `<div><span style="color:#4CAF50">$</span> ${command}</div>`;
+      
+      if (command.startsWith('pip install')) {
+        const packages = command.substring('pip install'.length).trim().split(' ');
+        await installPackages(packages, consoleOutput);
+      } else {
+        consoleOutput.innerHTML += `<div style="color:#ff5555">Error: Only "pip install" commands are supported</div>`;
+      }
+      
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    // Install Python packages
+    async function installPackages(packages, consoleOutput) {
+      if (!pyodide) {
+        consoleOutput.innerHTML += `<div style="color:#ff5555">Error: Python environment not initialized</div>`;
+        return;
+      }
+      
+      try {
+        consoleOutput.innerHTML += `<div>Installing packages: ${packages.join(', ')}...</div>`;
+        
+        await pyodide.runPythonAsync(`
+          import micropip
+          await micropip.install(${JSON.stringify(packages)})
+        `);
+        
+        consoleOutput.innerHTML += `<div style="color:#55ff55">Successfully installed packages: ${packages.join(', ')}</div>`;
+      } catch (error) {
+        consoleOutput.innerHTML += `<div style="color:#ff5555">Error installing packages: ${error.message}</div>`;
+        console.error('Package installation error:', error);
+      }
+    }
+    
+    // Show achievement badges
+    function handleAchievements() {
+      if (!badgesUnlocked.has("first")) {
+        showBadge("badge1");
+        badgesUnlocked.add("first");
+      }
+      if (runCount >= 3 && !badgesUnlocked.has("three")) {
+        showBadge("badge2");
+        badgesUnlocked.add("three");
+      }
+      if (runCount >= 5 && !badgesUnlocked.has("five")) {
+        showBadge("badge3");
+        badgesUnlocked.add("five");
+      }
+    }
+    
+    // Display a badge
+    function showBadge(id) {
+      const badge = document.getElementById(id);
+      badge.classList.add("show");
+      setTimeout(() => badge.classList.remove("show"), 5000);
+    }
+    
+    // Generate random 6-digit code
+    function generateRandomCode() {
+      return Math.floor(100000 + Math.random() * 900000).toString();
+    }
+    
+    // Simulate sending 2FA email
+    function sendTwoFactorEmail(code) {
+      console.log(`2FA code ${code} sent to ${SECURE_CREDENTIALS.twoFactorEmail}`);
+      // In a real app, you would send this to your server to email the user
+    }
+    
+    // Start resend timer
+    function startResendTimer() {
+      resendTimer.style.display = 'inline';
+      let seconds = 30;
+      resendSeconds.textContent = seconds;
+      
+      const timer = setInterval(() => {
+        seconds--;
+        resendSeconds.textContent = seconds;
+        
+        if (seconds <= 0) {
+          clearInterval(timer);
+          resendTimer.style.display = 'none';
+        }
+      }, 1000);
+    }
+    
+    // Open 2FA modal
+    function openTwoFactorModal() {
+      twoFactorModal.style.display = 'flex';
+      // Focus first input
+      codeInputs[0].focus();
+    }
+    
+    // Close 2FA modal
+    function closeTwoFactorModal() {
+      twoFactorModal.style.display = 'none';
+      // Clear all inputs
+      codeInputs.forEach(input => input.value = '');
+    }
+    
+    // Close reset modal
+    function closeResetModal() {
+      resetModal.style.display = 'none';
+      // Reset all steps
+      document.querySelectorAll('.security-reset-step').forEach(step => {
+        step.classList.remove('active');
+      });
+      document.getElementById('securityResetStep1').classList.add('active');
+      // Clear all inputs
+      resetUsername.value = '';
+      resetCode.value = '';
+      newPassword.value = '';
+      confirmPassword.value = '';
+      // Reset password strength
+      passwordStrength.style.width = '0%';
+      passwordStrength.style.backgroundColor = '';
+      // Reset rules
+      Object.values(passwordRules).forEach(rule => {
+        rule.classList.remove('valid');
+        rule.classList.add('invalid');
+      });
+    }
+    
+    // Check password strength
+    function checkPasswordStrength(password, strengthBar) {
+      let strength = 0;
+      
+      // Length check (12+ characters)
+      const hasLength = password.length >= 12;
+      passwordRules.length.classList.toggle('valid', hasLength);
+      passwordRules.length.classList.toggle('invalid', !hasLength);
+      if (hasLength) strength += 20;
+      
+      // Uppercase check
+      const hasUpper = /[A-Z]/.test(password);
+      passwordRules.upper.classList.toggle('valid', hasUpper);
+      passwordRules.upper.classList.toggle('invalid', !hasUpper);
+      if (hasUpper) strength += 20;
+      
+      // Lowercase check
+      const hasLower = /[a-z]/.test(password);
+      passwordRules.lower.classList.toggle('valid', hasLower);
+      passwordRules.lower.classList.toggle('invalid', !hasLower);
+      if (hasLower) strength += 20;
+      
+      // Number check
+      const hasNumber = /[0-9]/.test(password);
+      passwordRules.number.classList.toggle('valid', hasNumber);
+      passwordRules.number.classList.toggle('invalid', !hasNumber);
+      if (hasNumber) strength += 20;
+      
+      // Special char check
+      const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      passwordRules.special.classList.toggle('valid', hasSpecial);
+      passwordRules.special.classList.toggle('invalid', !hasSpecial);
+      if (hasSpecial) strength += 20;
+      
+      // Update strength bar
+      strengthBar.style.width = `${strength}%`;
+      
+      // Set color based on strength
+      if (strength < 60) {
+        strengthBar.style.backgroundColor = '#ef4444'; // red
+      } else if (strength < 80) {
+        strengthBar.style.backgroundColor = '#f59e0b'; // yellow
+      } else {
+        strengthBar.style.backgroundColor = '#10b981'; // green
+      }
+    }
+    
+    // Validate password against rules
+    function validatePasswordRules(password) {
+      // Length check (12+ characters)
+      passwordRules.length.classList.toggle('valid', password.length >= 12);
+      passwordRules.length.classList.toggle('invalid', password.length < 12);
+      
+      // Uppercase check
+      passwordRules.upper.classList.toggle('valid', /[A-Z]/.test(password));
+      passwordRules.upper.classList.toggle('invalid', !/[A-Z]/.test(password));
+      
+      // Lowercase check
+      passwordRules.lower.classList.toggle('valid', /[a-z]/.test(password));
+      passwordRules.lower.classList.toggle('invalid', !/[a-z]/.test(password));
+      
+      // Number check
+      passwordRules.number.classList.toggle('valid', /[0-9]/.test(password));
+      passwordRules.number.classList.toggle('invalid', !/[0-9]/.test(password));
+      
+      // Special char check
+      passwordRules.special.classList.toggle('valid', /[!@#$%^&*(),.?":{}|<>]/.test(password));
+      passwordRules.special.classList.toggle('invalid', !/[!@#$%^&*(),.?":{}|<>]/.test(password));
+    }
+    
+    // Check if password meets all requirements
+    function isPasswordStrong(password) {
+      return password.length >= 12 &&
+             /[A-Z]/.test(password) &&
+             /[a-z]/.test(password) &&
+             /[0-9]/.test(password) &&
+             /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    }
+    
+    // Session timeout functions
+    function resetSessionTimer() {
+      // Reset idle time
+      idleTime = 0;
+      
+      // Clear existing timeouts
+      clearInterval(timeoutInterval);
+      clearTimeout(sessionTimeout);
+      clearInterval(warningInterval);
+      
+      // Hide warning modal if visible
+      timeoutModal.style.display = 'none';
+      
+      // Start new timeout
+      sessionTimeout = setTimeout(showTimeoutWarning, SESSION_TIMEOUT - WARNING_TIMEOUT);
+    }
+    
+    function showTimeoutWarning() {
+      // Show warning modal
+      timeoutModal.style.display = 'flex';
+      
+      let seconds = 120;
+      updateTimeoutCountdown(seconds);
+      
+      // Update countdown every second
+      warningInterval = setInterval(() => {
+        seconds--;
+        updateTimeoutCountdown(seconds);
+        
+        if (seconds <= 0) {
+          clearInterval(warningInterval);
+          logoutDueToInactivity();
+        }
+      }, 1000);
+      
+      // Set final logout timeout
+      timeoutInterval = setTimeout(logoutDueToInactivity, WARNING_TIMEOUT);
+    }
+    
+    function updateTimeoutCountdown(seconds) {
+      const mins = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+      timeoutCountdown.textContent = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+    
+    function logoutDueToInactivity() {
+      alert('You have been logged out due to inactivity.');
+      window.location.reload();
+    }
+    
+    // Simple MD5 function for demo purposes (not secure for production)
+    function md5(input) {
+      // This is just a simple simulation - in production use a proper crypto library
+      return '5f4dcc3b5aa765d61d8327deb882cf99'; // Always returns hash of 'password'
+    }
+  </script>
+</body>
+</html>

@@ -127,8 +127,8 @@
       }
 
       // Predefined credentials (Normally, this data would be fetched from a server)
-      const correctUsername = 'SITA4811';
-      const correctPassword = 'RAM481136@';  // Correct password for validation
+      const correctUsername = 'SiyaRam';
+      const correctPassword = 'Lab123@';  // Correct password for validation
 
       // Get the input values
       const enteredUsername = document.getElementById('username').value;

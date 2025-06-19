@@ -2595,5 +2595,25 @@ int main() {
       return '5f4dcc3b5aa765d61d8327deb882cf99'; // Always returns hash of 'password'
     }
   </script>
+  <!-- Load reCAPTCHA safely -->
+<script>
+  function loadReCAPTCHA() {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://www.google.com/recaptcha/api.js?render=explicit';
+      script.async = true;
+      script.defer = true;
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('reCAPTCHA failed to load'));
+      document.head.appendChild(script);
+    });
+  }
+
+  // Initialize reCAPTCHA on page load
+  loadReCAPTCHA().catch(err => {
+    console.error(err);
+    alert("Warning: reCAPTCHA couldn't load. Check your ad blocker or network.");
+  });
+</script>
 </body>
 </html>

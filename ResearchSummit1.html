@@ -2614,6 +2614,38 @@ int main() {
     console.error(err);
     alert("Warning: reCAPTCHA couldn't load. Check your ad blocker or network.");
   });
+  <script src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" async defer></script>
+<script>
+  function onRecaptchaLoad() {
+    // Initialize and render your reCAPTCHA widget here if you are using render=explicit
+    // For example:
+    // grecaptcha.render('your-recaptcha-container-id', {
+    //   'sitekey' : 'your_site_key'
+    // });
+
+    // Your code that uses grecaptcha should be placed here or called from here.
+    // For instance, if you have a login function that calls grecaptcha.getResponse():
+    // document.getElementById('loginForm').addEventListener('submit', function(event) {
+    //   event.preventDefault();
+    //   handleLogin(); // Assuming handleLogin calls grecaptcha.getResponse()
+    // });
+  }
+
+  // Make sure your handleLogin function or any function calling reCAPTCHA methods
+  // is only executed after the reCAPTCHA is ready, perhaps initiated by onRecaptchaLoad.
+  function handleLogin() {
+    // ... your existing login logic
+    var response = grecaptcha.getResponse();
+    if (response.length == 0) {
+      // reCAPTCHA not checked
+      alert("Please complete the reCAPTCHA.");
+      return false;
+    } else {
+      // reCAPTCHA checked, proceed with login
+      // ...
+    }
+  }
+</script>
 </script>
 </body>
 </html>

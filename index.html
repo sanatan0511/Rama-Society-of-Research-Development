@@ -1,10 +1,8 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.google.com/recaptcha/ https://www.gstatic.com/; style-src 'self' 'unsafe-inline'; frame-src https://www.google.com/recaptcha/">
   <title>Admin Login - Ramanujan Society of Research</title>
   <style>
     /* Reset CSS */
@@ -18,15 +16,13 @@
       font-family: 'Arial', sans-serif;
       color: #333;
       background-color: #f5f5f5;
-      background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
     }
 
     /* Admin Login Page */
     .login-page {
       padding: 60px 20px;
       text-align: center;
-      background-color: transparent;
+      background-color: #f5f5f5;
     }
 
     .welcome-message {
@@ -44,7 +40,6 @@
       font-size: 2rem;
       margin-bottom: 30px;
       color: #7b1d1d;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
 
     .login-page form {
@@ -53,11 +48,10 @@
       align-items: center;
       max-width: 400px;
       margin: 0 auto;
-      background-color: rgba(255, 255, 255, 0.95);
-      padding: 30px;
+      background-color: #fff;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     }
 
     .login-page input {
@@ -74,7 +68,6 @@
     .login-page input:focus {
       border-color: #7b1d1d;
       outline: none;
-      box-shadow: 0 0 0 3px rgba(123, 29, 29, 0.2);
     }
 
     .login-page button {
@@ -86,18 +79,10 @@
       border-radius: 8px;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-top: 10px;
-      width: 100%;
-      max-width: 300px;
     }
 
     .login-page button:hover {
-      background-color: #5a1515;
-      transform: translateY(-2px);
-    }
-
-    .login-page button:active {
-      transform: translateY(0);
+      background-color: #ffd700;
     }
 
     .datetime {
@@ -105,29 +90,6 @@
       color: #333;
       margin-top: 20px;
       font-style: italic;
-    }
-
-    /* Security indicators */
-    .security-info {
-      font-size: 0.8rem;
-      color: #666;
-      margin-top: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-
-    .security-info i {
-      color: #7b1d1d;
-    }
-
-    /* Rate limiting message */
-    .rate-limit-message {
-      color: #d9534f;
-      font-size: 0.9rem;
-      margin-top: 10px;
-      display: none;
     }
   </style>
 
@@ -139,118 +101,64 @@
   <div class="login-page">
     <div class="welcome-message">
       <p>Welcome <span>Admin</span>!</p>
-      <p id="datetime">Current Date and Time: Loading...</p>
+      <p id="datetime"></p> <!-- This will display the current date and time -->
     </div>
     <h2>Admin Login</h2>
-    <form id="loginForm">
-      <input type="text" id="username" placeholder="Enter Username" required autocomplete="username">
-      <input type="password" id="password" placeholder="Enter Password" required autocomplete="current-password" minlength="8">
+    <form id="loginForm" onsubmit="return false;"> <!-- Prevent form submission to handle via JS -->
+      <input type="text" id="username" placeholder="Enter Username" required>
+      <input type="password" id="password" placeholder="Enter Password" required>
 
       <!-- reCAPTCHA Widget -->
       <div class="g-recaptcha" data-sitekey="6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></div>
 
-      <div class="rate-limit-message" id="rateLimitMessage"></div>
-
-      <button type="submit" id="loginButton">Login</button>
-      
-      <div class="security-info">
-        <i>🔒</i> Secure connection · Encrypted transmission
-      </div>
+      <button type="button" onclick="validateLogin()">Login</button> <!-- Use type="button" to prevent form submission -->
     </form>
   </div>
 
   <script>
     // JavaScript to validate login credentials securely
     let failedAttempts = 0;
-    let lastFailedAttemptTime = 0;
-    const RATE_LIMIT_DURATION = 300000; // 5 minutes in milliseconds
-
-    // Handle form submission
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      validateLogin();
-    });
 
     function validateLogin() {
-      // Check if we're still in rate-limited state
+      // Prevent login after 3 failed attempts
       if (failedAttempts >= 3) {
-        const timeSinceLastAttempt = Date.now() - lastFailedAttemptTime;
-        if (timeSinceLastAttempt < RATE_LIMIT_DURATION) {
-          const remainingTime = Math.ceil((RATE_LIMIT_DURATION - timeSinceLastAttempt) / 60000);
-          document.getElementById('rateLimitMessage').textContent = 
-            `Too many failed attempts. Please try again in ${remainingTime} minute(s).`;
-          document.getElementById('rateLimitMessage').style.display = 'block';
-          return;
-        } else {
-          // Reset counter if rate limit duration has passed
-          failedAttempts = 0;
-          document.getElementById('rateLimitMessage').style.display = 'none';
-        }
-      }
-
-      // Get the input values
-      const enteredUsername = document.getElementById('username').value.trim();
-      const enteredPassword = document.getElementById('password').value;
-
-      // Basic input sanitization
-      if (/[<>]/.test(enteredUsername) || /[<>]/.test(enteredPassword)) {
-        alert('Invalid characters detected');
+        alert("Too many failed attempts. Please try again later.");
         return;
       }
+
+      // Predefined credentials (Normally, this data would be fetched from a server)
+      const correctUsername = 'SITA4811';
+      const correctPassword = 'RAM481136@';  // Correct password for validation
+
+      // Get the input values
+      const enteredUsername = document.getElementById('username').value;
+      const enteredPassword = document.getElementById('password').value;
 
       // Get the reCAPTCHA response token
       const recaptchaResponse = grecaptcha.getResponse();
 
       // Check if reCAPTCHA is filled
-      if (!recaptchaResponse || recaptchaResponse.length === 0) {
+      if (recaptchaResponse.length === 0) {
         alert('Please verify that you are not a robot.');
         return;
       }
 
-      // Disable login button to prevent rapid clicks
-      document.getElementById('loginButton').disabled = true;
+      // Check if entered credentials match predefined ones
+      if (enteredUsername === correctUsername && enteredPassword === correctPassword) {
+        // If login is successful, redirect to first-page.html
+        console.log("Login successful. Redirecting...");
 
-      // Simulate server-side validation delay (in a real app, this would be an actual API call)
-      setTimeout(() => {
-        // Predefined credentials (Normally, this data would be fetched from a server)
-        const correctUsername = 'SiyaRam';
-        const correctPassword = 'Lab123@';  // Correct password for validation
+        // Optional: Store login status in sessionStorage
+        sessionStorage.setItem("loggedIn", true);
 
-        // Check if entered credentials match predefined ones
-        if (enteredUsername === correctUsername && enteredPassword === correctPassword) {
-          // If login is successful, redirect to first-page.html
-          console.log("Login successful. Redirecting...");
-
-          // Optional: Store login status in sessionStorage
-          sessionStorage.setItem("loggedIn", "true");
-          sessionStorage.setItem("loginTimestamp", Date.now().toString());
-
-          // Redirect to first-page.html
-          window.location.href = 'first-page.html';
-        } else {
-          // If login fails, show an error message and increase failed attempts counter
-          failedAttempts++;
-          lastFailedAttemptTime = Date.now();
-          
-          // Reset reCAPTCHA
-          grecaptcha.reset();
-          
-          // Show appropriate error message
-          if (failedAttempts >= 2) {
-            alert(`Invalid username or password. ${3 - failedAttempts} attempt(s) remaining.`);
-          } else {
-            alert('Invalid username or password');
-          }
-          
-          console.log("Login failed. Attempt number: " + failedAttempts);
-          
-          // Clear password field
-          document.getElementById('password').value = '';
-        }
-        
-        // Re-enable login button
-        document.getElementById('loginButton').disabled = false;
-      }, 500); // Simulated network delay
+        // Redirect to first-page.html
+        window.location.href = 'first-page.html';
+      } else {
+        // If login fails, show an error message and increase failed attempts counter
+        failedAttempts++;
+        alert('Invalid username or password');
+        console.log("Login failed. Attempt number: " + failedAttempts);
+      }
     }
 
     // JavaScript to show current date and time
@@ -267,21 +175,15 @@
         second: '2-digit',
         hour12: true 
       };
-      const formattedDate = now.toLocaleDateString('en-US', options);
-      const formattedTime = now.toLocaleTimeString('en-US', options);
-      dateTimeElement.textContent = `Current Date and Time: ${formattedDate} ${formattedTime}`;
+      const formattedDateTime = now.toLocaleString('en-US', options);
+      dateTimeElement.textContent = `Current Date and Time: ${formattedDateTime}`;
     }
 
-    // Call the function to update date and time every second
-    setInterval(updateDateTime, 1000);
-    
     // Initial call to display date/time immediately
     updateDateTime();
     
-    // Focus on username field when page loads
-    window.addEventListener('DOMContentLoaded', function() {
-      document.getElementById('username').focus();
-    });
+    // Call the function to update date and time every second
+    setInterval(updateDateTime, 1000);
   </script>
 </body>
 </html>

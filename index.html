@@ -3,9 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login - SiyaRam Society of Research and Development</title>
+  <meta name="description" content="Rama Society of Research & Development - Pioneering space research and scientific innovation">
+  <title>Rama Society of Research & Development (RSRD) | Space Research Pioneers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* Reset CSS */
+    :root {
+      --space-blue: #0a192f;
+      --star-white: #e6f1ff;
+      --rocket-red: #d90429;
+      --tech-teal: #64ffda;
+      --galaxy-purple: #6e44ff;
+      --moon-gray: #8892b0;
+      --sun-orange: #ff7d00;
+      --transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,617 +26,914 @@
     }
 
     body {
-      font-family: 'Arial', sans-serif;
-      color: #333;
-      background-color: #f5f5f5;
-      background-image: url('https://i.imgur.com/JfQ3y9T.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      min-height: 100vh;
+      font-family: 'Space Mono', monospace;
+      background-color: var(--space-blue);
+      color: var(--star-white);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Orbitron', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* Animated Space Background */
+    .space-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+      overflow: hidden;
+    }
+
+    /* Stars Animation */
+    @keyframes animStar {
+      from { transform: translateY(0); }
+      to { transform: translateY(-2000px); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--space-blue);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--tech-teal);
+      border-radius: 10px;
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--space-blue);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-logo {
+      width: 150px;
+      margin-bottom: 30px;
+      animation: pulse 2s infinite;
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 4px;
+      background: rgba(100, 255, 218, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .loading-progress {
+      height: 100%;
+      width: 0;
+      background: var(--tech-teal);
+      transition: width 0.3s ease;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-    }
-
-    /* Admin Login Page */
-    .login-page {
-      padding: 40px;
       text-align: center;
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      width: 90%;
-      max-width: 500px;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
       position: relative;
       overflow: hidden;
     }
 
-    .login-page::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.3);
-      z-index: -1;
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      padding: 0 20px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.5s;
     }
 
-    .welcome-message {
-      font-size: 1.8rem;
-      margin-bottom: 25px;
-      color: #7b1d1d;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
-    .welcome-message span {
-      font-weight: bold;
-      color: #333;
-      display: inline-block;
-      padding: 0 5px;
-      background: linear-gradient(to right, #7b1d1d, #ffd700);
+    .hero-logo {
+      width: 300px;
+      margin-bottom: 2rem;
+      filter: drop-shadow(0 0 15px rgba(100, 255, 218, 0.7));
+      transform: scale(0.9);
+      opacity: 0;
+      animation: logoEntrance 1s ease forwards 0.3s;
+    }
+
+    @keyframes logoEntrance {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, var(--tech-teal), var(--galaxy-purple));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
+      text-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
     }
 
-    .login-page h2 {
-      font-size: 2.2rem;
-      margin-bottom: 30px;
-      color: #7b1d1d;
+    .hero-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      color: var(--moon-gray);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .scroll-down {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--tech-teal);
+      font-size: 1.5rem;
+      animation: bounce 2s infinite;
+      cursor: pointer;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 2s, bounce 2s infinite 2s;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0) translateX(-50%); }
+      50% { transform: translateY(-10px) translateX(-50%); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 20px 0;
+      z-index: 100;
+      transition: var(--transition);
+      background: rgba(10, 25, 47, 0.9);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 15px;
+      transition: var(--transition);
+    }
+
+    .logo:hover img {
+      transform: rotate(15deg);
+    }
+
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--tech-teal);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+    }
+
+    .nav-links li {
+      margin-left: 30px;
       position: relative;
-      display: inline-block;
     }
 
-    .login-page h2::after {
+    .nav-links a {
+      position: relative;
+      padding: 5px 0;
+      font-weight: bold;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a::after {
       content: '';
       position: absolute;
-      bottom: -10px;
-      left: 25%;
-      width: 50%;
-      height: 3px;
-      background: linear-gradient(to right, #7b1d1d, #ffd700);
-      border-radius: 3px;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--tech-teal);
+      transition: var(--transition);
     }
 
-    .login-page form {
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-links a:hover {
+      color: var(--tech-teal);
+    }
+
+    /* Research Section */
+    .research-section {
+      padding: 120px 0;
+      position: relative;
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
-      margin: 0 auto;
-      padding: 20px 0;
     }
 
-    .login-page input {
-      padding: 15px;
-      margin: 15px 0;
+    .section-title {
+      font-size: 2.8rem;
+      margin-bottom: 3rem;
+      text-align: center;
+      position: relative;
+      display: inline-block;
+      text-transform: uppercase;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--tech-teal), var(--galaxy-purple));
+      border-radius: 2px;
+    }
+
+    .research-content {
+      max-width: 800px;
+      margin-bottom: 3rem;
+      text-align: center;
+      font-size: 1.1rem;
+      line-height: 1.8;
+    }
+
+    .research-image-container {
+      position: relative;
       width: 100%;
-      max-width: 350px;
+      max-width: 900px;
+      margin: 3rem 0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      transition: var(--transition);
+      transform: perspective(1000px) rotateX(5deg) rotateY(0deg) scale(0.95);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.8s;
+    }
+
+    .research-image-container:hover {
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+
+    .research-image {
+      width: 100%;
+      display: block;
+      transition: var(--transition);
+    }
+
+    .research-image-container:hover .research-image {
+      transform: scale(1.05);
+    }
+
+    .image-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 25px;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      color: white;
       font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      transition: all 0.3s ease;
-      background-color: rgba(255,255,255,0.8);
+      text-align: left;
     }
 
-    .login-page input:focus {
-      border-color: #7b1d1d;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(123, 29, 29, 0.2);
-      transform: translateY(-2px);
-    }
-
-    .login-page button {
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      background: linear-gradient(45deg, #7b1d1d, #a52a2a);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin-top: 20px;
+    .image-caption::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
       width: 100%;
-      max-width: 350px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      height: 100%;
+      background: linear-gradient(to right, var(--rocket-red), transparent);
+      opacity: 0.3;
+      z-index: -1;
+    }
+
+    /* Button Styles */
+    .btn {
+      display: inline-block;
+      padding: 16px 35px;
+      background: transparent;
+      color: var(--tech-teal);
+      border: 2px solid var(--tech-teal);
+      border-radius: 4px;
+      font-family: 'Orbitron', sans-serif;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      cursor: pointer;
+      transition: var(--transition);
       position: relative;
       overflow: hidden;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 1s;
     }
 
-    .login-page button:hover {
-      background: linear-gradient(45deg, #a52a2a, #7b1d1d);
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .login-page button:active {
-      transform: translateY(0);
-    }
-
-    .login-page button::after {
+    .btn::before {
       content: '';
       position: absolute;
       top: 0;
       left: -100%;
       width: 100%;
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.2),
-        transparent
-      );
-      transition: 0.5s;
+      background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.2), transparent);
+      transition: var(--transition);
+      z-index: -1;
     }
 
-    .login-page button:hover::after {
+    .btn:hover {
+      color: var(--space-blue);
+      background: var(--tech-teal);
+      box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+      transform: translateY(-3px);
+    }
+
+    .btn:hover::before {
       left: 100%;
     }
 
-    .datetime {
-      font-size: 1.1rem;
-      color: #555;
-      margin-top: 25px;
-      font-style: italic;
-      background-color: rgba(255,255,255,0.7);
-      padding: 10px 15px;
-      border-radius: 8px;
-      display: inline-block;
-    }
-
-    .g-recaptcha {
-      margin: 20px 0;
-      display: flex;
-      justify-content: center;
-    }
-
-    .timer {
-      font-size: 1rem;
-      color: #7b1d1d;
-      font-weight: bold;
-      margin-top: 10px;
-      background-color: rgba(255,255,255,0.7);
-      padding: 5px 10px;
-      border-radius: 5px;
-      display: inline-block;
-    }
-
-    .security-info {
-      font-size: 0.8rem;
-      color: #666;
-      margin-top: 20px;
-      padding: 10px;
-      background-color: rgba(255,255,255,0.6);
-      border-radius: 5px;
-    }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .login-page {
-      animation: fadeIn 0.8s ease-out forwards;
-    }
-
-    /* Password change modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.7);
+    /* Stats Section */
+    .stats-section {
+      padding: 80px 0;
+      background: rgba(10, 25, 47, 0.7);
       backdrop-filter: blur(5px);
     }
 
-    .modal-content {
-      background-color: rgba(255,255,255,0.95);
-      margin: 15% auto;
-      padding: 30px;
-      border-radius: 15px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      animation: fadeIn 0.5s ease-out;
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
     }
 
-    .modal h3 {
-      color: #7b1d1d;
-      margin-bottom: 20px;
+    .stat-card {
       text-align: center;
-    }
-
-    .modal input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      padding: 30px 20px;
+      background: rgba(100, 255, 218, 0.05);
       border-radius: 8px;
-      border: 1px solid #ddd;
+      border: 1px solid rgba(100, 255, 218, 0.1);
+      transition: var(--transition);
     }
 
-    .modal-buttons {
+    .stat-card:hover {
+      transform: translateY(-10px);
+      background: rgba(100, 255, 218, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg, var(--tech-teal), var(--sun-orange));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: var(--moon-gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Footer */
+    footer {
+      background: rgba(10, 25, 47, 0.95);
+      padding: 80px 0 30px;
+      text-align: center;
+      position: relative;
+      border-top: 1px solid rgba(100, 255, 218, 0.1);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .footer-logo {
+      width: 180px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }
+
+    .footer-links {
       display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
+      justify-content: center;
+      list-style: none;
+      margin: 40px 0;
+      flex-wrap: wrap;
     }
 
-    .modal-buttons button {
-      padding: 10px 20px;
-      border-radius: 8px;
+    .footer-links li {
+      margin: 0 20px 15px;
+    }
+
+    .footer-links a {
+      color: var(--moon-gray);
+      transition: var(--transition);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+    }
+
+    .footer-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--tech-teal);
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--tech-teal);
+    }
+
+    .footer-links a:hover::after {
+      width: 100%;
+    }
+
+    .social-links {
+      margin: 40px 0;
+    }
+
+    .social-links a {
+      color: var(--star-white);
+      font-size: 1.3rem;
+      margin: 0 15px;
+      transition: var(--transition);
+      display: inline-block;
+    }
+
+    .social-links a:hover {
+      color: var(--tech-teal);
+      transform: translateY(-5px) scale(1.2);
+    }
+
+    .copyright {
+      margin-top: 40px;
+      color: var(--moon-gray);
+      font-size: 0.85rem;
+    }
+
+    .made-with-love {
+      color: var(--rocket-red);
+      margin: 0 5px;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: var(--tech-teal);
+      color: var(--space-blue);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
       cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      z-index: 99;
+      box-shadow: 0 5px 20px rgba(100, 255, 218, 0.3);
     }
 
-    .modal-buttons button:first-child {
-      background-color: #7b1d1d;
-      color: white;
-      border: none;
+    .back-to-top.active {
+      opacity: 1;
+      visibility: visible;
     }
 
-    .modal-buttons button:last-child {
-      background-color: #ddd;
-      border: none;
+    .back-to-top:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
     }
-    
-    /* Remind later button */
-    .remind-later-btn {
-      background-color: #ff9800 !important;
-      color: white !important;
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+      .hero-title {
+        font-size: 3rem;
+      }
+      
+      .section-title {
+        font-size: 2.5rem;
+      }
     }
-    
-    /* Force change modal */
-    .force-modal {
-      display: none;
+
+    @media (max-width: 992px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      
+      .section-title {
+        font-size: 2.2rem;
+      }
+      
+      .stat-number {
+        font-size: 3rem;
+      }
     }
-    
-    .force-modal .modal-content {
-      background-color: rgba(255, 235, 235, 0.95);
-      border: 2px solid #7b1d1d;
+
+    @media (max-width: 768px) {
+      .nav-container {
+        flex-direction: column;
+      }
+      
+      .logo {
+        margin-bottom: 15px;
+      }
+      
+      .nav-links {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .nav-links li {
+        margin: 0 10px 10px;
+      }
+      
+      .hero-title {
+        font-size: 2rem;
+      }
+      
+      .hero-logo {
+        width: 250px;
+      }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-    
-    .force-modal h3 {
-      color: #d32f2f;
-    }
-    
-    .force-modal p.warning {
-      color: #d32f2f;
-      font-weight: bold;
-      margin-bottom: 15px;
+
+    @media (max-width: 576px) {
+      .hero-title {
+        font-size: 1.8rem;
+      }
+      
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .btn {
+        padding: 14px 30px;
+        font-size: 0.8rem;
+      }
+      
+      .footer-links li {
+        margin: 0 10px 10px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .back-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        bottom: 20px;
+        right: 20px;
+      }
     }
   </style>
-
-  <!-- Include Google reCAPTCHA Script -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
-  <!-- Admin Login Form -->
-  <div class="login-page">
-    <div class="welcome-message">
-      <p>Welcome <span>Admin</span>!</p>
-      <p id="datetime"></p>
-      <div class="timer" id="timer">Session time remaining: 05:00</div>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo" class="loading-logo">
+    <div class="loading-bar">
+      <div class="loading-progress" id="loadingProgress"></div>
     </div>
-    <h2>Admin Login</h2>
-    <form id="loginForm" onsubmit="return false;">
-      <input type="text" id="username" placeholder="Enter Username" required>
-      <input type="password" id="password" placeholder="Enter Password" required>
+  </div>
 
-      <!-- reCAPTCHA Widget -->
-      <div class="g-recaptcha" data-sitekey="6LdAVZcqAAAAAHoKIcFfs9RgZHrfx0K5_tbdGJ3U"></div>
+  <!-- Animated Space Background -->
+  <div class="space-bg" id="stars"></div>
 
-      <button type="button" onclick="validateLogin()">Login</button>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-content">
+      <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo" class="hero-logo">
+      <h1 class="hero-title">Rama Society of Research & Development</h1>
+      <p class="hero-subtitle">Pioneering the future of space research and scientific discovery through cutting-edge innovation and collaborative excellence</p>
+      <a href="#research" class="btn">Explore Our Mission</a>
+      <a href="#research" class="scroll-down"><i class="fas fa-chevron-down"></i></a>
+    </div>
+  </section>
+
+  <!-- Navigation -->
+  <nav id="mainNav">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo">
+        <span class="logo-text">RSRD</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="ResearchSummit.html">Research Labs</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="research.html">Member Login</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Research Section -->
+  <section id="research" class="research-section">
+    <div class="section-container">
+      <h2 class="section-title">Explore Our Research</h2>
+      <p class="research-content">
+        Our society is dedicated to advancing research in science and mathematics. Through collaborations and mentorships, we aim to cultivate a research-oriented mindset in students. Join us in our journey of discovery and innovation as we push the boundaries of space technology and scientific understanding.
+      </p>
+
+      <div class="research-image-container">
+        <img src="https://im.indiatimes.in/content/2019/Jul/isro_history_1563885126.jpg?w=640&h=427&cc=1&webp=1&q=75" alt="Space Research" class="research-image">
+        <div class="image-caption">Inspired by ISRO's groundbreaking achievements in space exploration and technology</div>
+      </div>
+
+      <a href="research.html" class="btn">Access Research Portal</a>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="section-container">
+      <h2 class="section-title">Our Impact</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="researchProjects">0</div>
+          <div class="stat-label">Research Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="collaborations">0</div>
+          <div class="stat-label">Global Collaborations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="publications">0</div>
+          <div class="stat-label">Publications</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="members">0</div>
+          <div class="stat-label">Active Members</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo" class="footer-logo">
       
-      <div class="security-info">
-        <p>For security reasons, please change your password after login.</p>
-        <p>Your session will expire in 5 minutes.</p>
+      <ul class="footer-links">
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="ResearchSummit.html">Labs</a></li>
+        <li><a href="#">Publications</a></li>
+        <li><a href="research.html">Login</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+      
+      <div class="social-links">
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
       </div>
-    </form>
-  </div>
+      
+      <p class="copyright">
+        &copy; 2025 Rama Society of Research & Development (RSRD). All rights reserved.<br>
+        Made with <span class="made-with-love">♥</span> for scientific advancement in India
+      </p>
+    </div>
+  </footer>
 
-  <!-- Password Change Modal (60-day reminder) -->
-  <div id="passwordModal" class="modal">
-    <div class="modal-content">
-      <h3>Password Change Recommended</h3>
-      <p>Your password is more than 60 days old. For security reasons, we recommend changing it now.</p>
-      <input type="password" id="currentPassword" placeholder="Current Password">
-      <input type="password" id="newPassword" placeholder="New Password">
-      <input type="password" id="confirmPassword" placeholder="Confirm New Password">
-      <div class="modal-buttons">
-        <button onclick="changePassword()">Change Password</button>
-        <button onclick="remindLater()" class="remind-later-btn">Remind Me Later</button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Force Password Change Modal (360-day requirement) -->
-  <div id="forcePasswordModal" class="modal force-modal">
-    <div class="modal-content">
-      <h3>Password Change Required</h3>
-      <p class="warning">Your password is more than 360 days old and must be changed before you can proceed.</p>
-      <p>For security reasons, you cannot continue without changing your password.</p>
-      <input type="password" id="forceCurrentPassword" placeholder="Current Password" required>
-      <input type="password" id="forceNewPassword" placeholder="New Password" required>
-      <input type="password" id="forceConfirmPassword" placeholder="Confirm New Password" required>
-      <div class="modal-buttons">
-        <button onclick="forceChangePassword()">Change Password</button>
-      </div>
-    </div>
+  <!-- Back to Top Button -->
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
   </div>
 
   <script>
-    // JavaScript to validate login credentials securely
-    let failedAttempts = 0;
-    let sessionTimer;
-    let timeLeft = 300; // 5 minutes in seconds
-    let sessionActive = false;
-    
-    // Password age tracking (in days)
-    const PASSWORD_MAX_AGE = 360; // days
-    const PASSWORD_WARNING_AGE = 60; // days
-    let passwordLastChanged = localStorage.getItem('passwordLastChanged');
-    
-    // Initialize password last changed date if not set
-    if (!passwordLastChanged) {
-      // Set to 61 days ago to trigger the warning (for demo purposes)
-      // In production, you would set this to the actual last changed date
-      const date = new Date();
-      date.setDate(date.getDate() - 61);
-      passwordLastChanged = date.toISOString();
-      localStorage.setItem('passwordLastChanged', passwordLastChanged);
-    }
-
-    // Speech synthesis for welcome message
-    function speakWelcome() {
-      if ('speechSynthesis' in window) {
-        const speech = new SpeechSynthesisUtterance();
-        speech.text = "सिया राम आपका स्वागत करते हैं";
-        speech.lang = 'hi-IN';
-        window.speechSynthesis.speak(speech);
-      }
-    }
-    
-    // Function to speak welcome message for next page
-    function speakNextPageWelcome() {
-      if ('speechSynthesis' in window) {
-        const speech = new SpeechSynthesisUtterance();
-        speech.text = "SiyaRam Research and Development welcomes you. Develop India. Develop Nation.";
-        speech.lang = 'en-IN';
-        speech.rate = 0.9; // Slightly slower for clarity
-        speech.pitch = 1.1; // Slightly higher pitch for enthusiasm
-        window.speechSynthesis.speak(speech);
-      }
-    }
-
-    // Call the welcome message when page loads
-    window.onload = function() {
-      speakWelcome();
-      updateTimerDisplay();
+    // Loading Screen Animation
+    document.addEventListener('DOMContentLoaded', function() {
+      const loadingScreen = document.getElementById('loadingScreen');
+      const loadingProgress = document.getElementById('loadingProgress');
       
-      // Check if user is already logged in (for demo purposes)
-      if (sessionStorage.getItem("loggedIn") === "true") {
-        checkPasswordAge();
-      }
-      
-      // Start checking session status
-      checkSessionStatus();
-    };
-    
-    function checkSessionStatus() {
-      if (sessionActive) {
-        timeLeft--;
-        updateTimerDisplay();
+      // Simulate loading progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress > 100) progress = 100;
+        loadingProgress.style.width = `${progress}%`;
         
-        if (timeLeft <= 0) {
-          endSession();
+        if (progress >= 100) {
+          clearInterval(interval);
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
         }
+      }, 200);
+      
+      // Create stars for background
+      const spaceBg = document.getElementById('stars');
+      const starCount = 300;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.style.position = 'absolute';
+        star.style.width = `${Math.random() * 3}px`;
+        star.style.height = star.style.width;
+        star.style.backgroundColor = 'white';
+        star.style.borderRadius = '50%';
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.opacity = Math.random();
+        star.style.animation = `animStar ${Math.random() * 50 + 50}s linear infinite`;
+        star.style.animationDelay = `${Math.random() * 5}s`;
+        spaceBg.appendChild(star);
       }
-      setTimeout(checkSessionStatus, 1000);
-    }
-    
-    function startSession() {
-      sessionActive = true;
-      timeLeft = 300; // 5 minutes
-      updateTimerDisplay();
-    }
-    
-    function endSession() {
-      sessionActive = false;
-      sessionStorage.removeItem("loggedIn");
-      alert('Your session has expired. Please login again.');
-      window.location.href = window.location.href;
-    }
-
-    function validateLogin() {
-      // Prevent login after 3 failed attempts
-      if (failedAttempts >= 3) {
-        alert("Too many failed attempts. Please try again later.");
-        return;
-      }
-
-      // Predefined credentials
-      const correctUsername = 'SiyaRam';
-      const correctPassword = 'Siya4811@';
-
-      // Get the input values
-      const enteredUsername = document.getElementById('username').value;
-      const enteredPassword = document.getElementById('password').value;
-
-      // Get the reCAPTCHA response token
-      const recaptchaResponse = grecaptcha.getResponse();
-
-      // Check if reCAPTCHA is filled
-      if (recaptchaResponse.length === 0) {
-        alert('Please verify that you are not a robot.');
-        return;
-      }
-
-      // Check if entered credentials match predefined ones
-      if (enteredUsername === correctUsername && enteredPassword === correctPassword) {
-        // If login is successful
-        console.log("Login successful.");
+      
+      // Add scrolling effect to navigation
+      window.addEventListener('scroll', function() {
+        const nav = document.getElementById('mainNav');
+        const backToTop = document.getElementById('backToTop');
         
-        // Store login status in sessionStorage
-        sessionStorage.setItem("loggedIn", true);
-        sessionStorage.setItem("username", enteredUsername);
-
-        // Start session
-        startSession();
-
-        // Check password age and show appropriate modal
-        checkPasswordAge();
-      } else {
-        // If login fails
-        failedAttempts++;
-        alert('Invalid username or password');
-        console.log("Login failed. Attempt number: " + failedAttempts);
+        if (window.scrollY > 50) {
+          nav.style.padding = '15px 0';
+          nav.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
+        } else {
+          nav.style.padding = '20px 0';
+          nav.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+        }
         
-        // Reset reCAPTCHA
-        grecaptcha.reset();
-      }
-    }
-    
-    function checkPasswordAge() {
-      const lastChanged = new Date(passwordLastChanged);
-      const today = new Date();
-      const daysSinceChange = Math.floor((today - lastChanged) / (1000 * 60 * 60 * 24));
+        // Show back to top button
+        if (window.scrollY > 300) {
+          backToTop.classList.add('active');
+        } else {
+          backToTop.classList.remove('active');
+        }
+      });
       
-      if (daysSinceChange >= PASSWORD_MAX_AGE) {
-        // Password is too old - force change
-        document.getElementById('forcePasswordModal').style.display = 'block';
-      } else if (daysSinceChange >= PASSWORD_WARNING_AGE) {
-        // Password is old - recommend change
-        document.getElementById('passwordModal').style.display = 'block';
-      } else {
-        // Password is fine - proceed to admin page
-        proceedToNextPage();
-      }
-    }
-
-    function changePassword() {
-      const currentPass = document.getElementById('currentPassword').value;
-      const newPass = document.getElementById('newPassword').value;
-      const confirmPass = document.getElementById('confirmPassword').value;
-
-      // Validate current password
-      if (currentPass !== 'Siya4811@') {
-        alert('Current password is incorrect');
-        return;
-      }
-
-      // Validate new password
-      if (newPass !== confirmPass) {
-        alert('New passwords do not match');
-        return;
-      }
-
-      if (newPass.length < 8) {
-        alert('Password must be at least 8 characters long');
-        return;
-      }
-
-      // Update password last changed date
-      const today = new Date();
-      localStorage.setItem('passwordLastChanged', today.toISOString());
-      passwordLastChanged = today.toISOString();
+      // Back to top functionality
+      document.getElementById('backToTop').addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
       
-      alert('Password changed successfully!');
-      closeModal();
-      
-      // Proceed to next page with welcome message
-      proceedToNextPage();
-    }
-    
-    function forceChangePassword() {
-      const currentPass = document.getElementById('forceCurrentPassword').value;
-      const newPass = document.getElementById('forceNewPassword').value;
-      const confirmPass = document.getElementById('forceConfirmPassword').value;
-
-      // Validate current password
-      if (currentPass !== 'Siya4811@') {
-        alert('Current password is incorrect');
-        return;
+      // Animate stats counters
+      function animateValue(id, start, end, duration) {
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          obj.innerHTML = Math.floor(progress * (end - start) + start);
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
       }
-
-      // Validate new password
-      if (newPass !== confirmPass) {
-        alert('New passwords do not match');
-        return;
-      }
-
-      if (newPass.length < 8) {
-        alert('Password must be at least 8 characters long');
-        return;
-      }
-
-      // Update password last changed date
-      const today = new Date();
-      localStorage.setItem('passwordLastChanged', today.toISOString());
-      passwordLastChanged = today.toISOString();
       
-      alert('Password changed successfully! You can now proceed.');
+      // Start counters when stats section is in view
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateValue('researchProjects', 0, 42, 2000);
+            animateValue('collaborations', 0, 18, 2000);
+            animateValue('publications', 0, 76, 2000);
+            animateValue('members', 0, 215, 2000);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
       
-      // Proceed to next page with welcome message
-      proceedToNextPage();
-    }
-    
-    function proceedToNextPage() {
-      // Speak welcome message before redirecting
-      speakNextPageWelcome();
+      observer.observe(document.querySelector('.stats-section'));
       
-      // Redirect to admin page after a short delay to allow speech
-      setTimeout(() => {
-        window.location.href = 'first-page.html';
-      }, 1500);
-    }
-    
-    function remindLater() {
-      closeModal();
-      // Proceed to next page with welcome message
-      proceedToNextPage();
-    }
-
-    function closeModal() {
-      document.getElementById('passwordModal').style.display = 'none';
-      document.getElementById('forcePasswordModal').style.display = 'none';
-    }
-
-    function updateTimerDisplay() {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      document.getElementById('timer').textContent = 
-        `Session time remaining: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-    // JavaScript to show current date and time
-    function updateDateTime() {
-      const dateTimeElement = document.getElementById('datetime');
-      const now = new Date();
-      const options = { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit',
-        hour12: true 
-      };
-      const formattedDateTime = now.toLocaleString('en-US', options);
-      dateTimeElement.textContent = formattedDateTime;
-    }
-
-    // Initial call to display date/time immediately
-    updateDateTime();
-    
-    // Call the function to update date and time every second
-    setInterval(updateDateTime, 1000);
+      // Force refresh to index.html when page is refreshed
+      window.addEventListener('beforeunload', function() {
+        window.scrollTo(0, 0);
+      });
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+    });
   </script>
 </body>
 </html>

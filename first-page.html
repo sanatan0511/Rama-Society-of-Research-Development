@@ -986,5 +986,12 @@
       });
     });
   </script>
+  <script>
+  // Check if the page was reloaded
+  if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+    window.location.href = "index.html";
+  }
+</script>
+
 </body>
 </html>

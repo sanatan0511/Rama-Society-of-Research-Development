@@ -6,7 +6,7 @@
   <meta name="description" content="Rama Society of Research & Development - Pioneering space research and scientific innovation">
   <title>Rama Society of Research & Development (RSRD) | Space Research Pioneers</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --space-blue: #0a192f;
@@ -15,6 +15,7 @@
       --tech-teal: #64ffda;
       --galaxy-purple: #6e44ff;
       --moon-gray: #8892b0;
+      --sun-orange: #ff7d00;
       --transition: all 0.4s cubic-bezier(0.645, 0.045, 0.355, 1);
     }
 
@@ -32,7 +33,7 @@
       overflow-x: hidden;
     }
 
-    h1, h2, h3 {
+    h1, h2, h3, h4 {
       font-family: 'Orbitron', sans-serif;
       font-weight: 700;
       letter-spacing: 1px;
@@ -56,9 +57,14 @@
       to { transform: translateY(-2000px); }
     }
 
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
     /* Scrollbar */
     ::-webkit-scrollbar {
-      width: 8px;
+      width: 10px;
     }
 
     ::-webkit-scrollbar-track {
@@ -68,6 +74,44 @@
     ::-webkit-scrollbar-thumb {
       background: var(--tech-teal);
       border-radius: 10px;
+    }
+
+    /* Loading Screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--space-blue);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-logo {
+      width: 150px;
+      margin-bottom: 30px;
+      animation: pulse 2s infinite;
+    }
+
+    .loading-bar {
+      width: 200px;
+      height: 4px;
+      background: rgba(100, 255, 218, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+
+    .loading-progress {
+      height: 100%;
+      width: 0;
+      background: var(--tech-teal);
+      transition: width 0.3s ease;
     }
 
     /* Hero Section */
@@ -86,29 +130,52 @@
       z-index: 1;
       max-width: 800px;
       padding: 0 20px;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.5s;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .hero-logo {
       width: 300px;
       margin-bottom: 2rem;
-      filter: drop-shadow(0 0 10px rgba(100, 255, 218, 0.5));
+      filter: drop-shadow(0 0 15px rgba(100, 255, 218, 0.7));
+      transform: scale(0.9);
+      opacity: 0;
+      animation: logoEntrance 1s ease forwards 0.3s;
+    }
+
+    @keyframes logoEntrance {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .hero-title {
-      font-size: 3rem;
+      font-size: 3.5rem;
       margin-bottom: 1.5rem;
       text-transform: uppercase;
       background: linear-gradient(90deg, var(--tech-teal), var(--galaxy-purple));
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+      text-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
     }
 
     .hero-subtitle {
-      font-size: 1.2rem;
+      font-size: 1.3rem;
       margin-bottom: 2rem;
       color: var(--moon-gray);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .scroll-down {
@@ -120,11 +187,17 @@
       font-size: 1.5rem;
       animation: bounce 2s infinite;
       cursor: pointer;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 2s, bounce 2s infinite 2s;
     }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0) translateX(-50%); }
       50% { transform: translateY(-10px) translateX(-50%); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
     }
 
     /* Navigation */
@@ -137,6 +210,7 @@
       transition: var(--transition);
       background: rgba(10, 25, 47, 0.9);
       backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
     }
 
     .nav-container {
@@ -156,12 +230,20 @@
     .logo img {
       height: 40px;
       margin-right: 15px;
+      transition: var(--transition);
+    }
+
+    .logo:hover img {
+      transform: rotate(15deg);
     }
 
     .logo-text {
       font-family: 'Orbitron', sans-serif;
-      font-size: 1.2rem;
+      font-size: 1.3rem;
+      font-weight: 700;
       color: var(--tech-teal);
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
 
     .nav-links {
@@ -171,12 +253,16 @@
 
     .nav-links li {
       margin-left: 30px;
+      position: relative;
     }
 
     .nav-links a {
       position: relative;
       padding: 5px 0;
       font-weight: bold;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .nav-links a::after {
@@ -200,7 +286,7 @@
 
     /* Research Section */
     .research-section {
-      padding: 100px 0;
+      padding: 120px 0;
       position: relative;
     }
 
@@ -214,22 +300,24 @@
     }
 
     .section-title {
-      font-size: 2.5rem;
+      font-size: 2.8rem;
       margin-bottom: 3rem;
       text-align: center;
       position: relative;
       display: inline-block;
+      text-transform: uppercase;
     }
 
     .section-title::after {
       content: '';
       position: absolute;
-      bottom: -10px;
+      bottom: -15px;
       left: 50%;
       transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: var(--tech-teal);
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--tech-teal), var(--galaxy-purple));
+      border-radius: 2px;
     }
 
     .research-content {
@@ -237,6 +325,7 @@
       margin-bottom: 3rem;
       text-align: center;
       font-size: 1.1rem;
+      line-height: 1.8;
     }
 
     .research-image-container {
@@ -246,13 +335,16 @@
       margin: 3rem 0;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
       transition: var(--transition);
+      transform: perspective(1000px) rotateX(5deg) rotateY(0deg) scale(0.95);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 0.8s;
     }
 
     .research-image-container:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     }
 
     .research-image {
@@ -262,7 +354,7 @@
     }
 
     .research-image-container:hover .research-image {
-      transform: scale(1.03);
+      transform: scale(1.05);
     }
 
     .image-caption {
@@ -270,17 +362,29 @@
       bottom: 0;
       left: 0;
       width: 100%;
-      padding: 20px;
-      background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+      padding: 25px;
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
       color: white;
-      font-size: 0.9rem;
+      font-size: 1rem;
       text-align: left;
+    }
+
+    .image-caption::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to right, var(--rocket-red), transparent);
+      opacity: 0.3;
+      z-index: -1;
     }
 
     /* Button Styles */
     .btn {
       display: inline-block;
-      padding: 15px 30px;
+      padding: 16px 35px;
       background: transparent;
       color: var(--tech-teal);
       border: 2px solid var(--tech-teal);
@@ -288,12 +392,16 @@
       font-family: 'Orbitron', sans-serif;
       font-weight: bold;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       cursor: pointer;
       transition: var(--transition);
       position: relative;
       overflow: hidden;
       margin-top: 20px;
+      font-size: 0.9rem;
+      transform: translateY(20px);
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 1s;
     }
 
     .btn::before {
@@ -303,25 +411,77 @@
       left: -100%;
       width: 100%;
       height: 100%;
-      background: var(--tech-teal);
+      background: linear-gradient(90deg, transparent, rgba(100, 255, 218, 0.2), transparent);
       transition: var(--transition);
       z-index: -1;
     }
 
     .btn:hover {
       color: var(--space-blue);
+      background: var(--tech-teal);
+      box-shadow: 0 0 20px rgba(100, 255, 218, 0.5);
+      transform: translateY(-3px);
     }
 
     .btn:hover::before {
-      left: 0;
+      left: 100%;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 80px 0;
+      background: rgba(10, 25, 47, 0.7);
+      backdrop-filter: blur(5px);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .stat-card {
+      text-align: center;
+      padding: 30px 20px;
+      background: rgba(100, 255, 218, 0.05);
+      border-radius: 8px;
+      border: 1px solid rgba(100, 255, 218, 0.1);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-10px);
+      background: rgba(100, 255, 218, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 700;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg, var(--tech-teal), var(--sun-orange));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .stat-label {
+      font-size: 1rem;
+      color: var(--moon-gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     /* Footer */
     footer {
-      background: rgba(10, 25, 47, 0.9);
-      padding: 60px 0 30px;
+      background: rgba(10, 25, 47, 0.95);
+      padding: 80px 0 30px;
       text-align: center;
       position: relative;
+      border-top: 1px solid rgba(100, 255, 218, 0.1);
     }
 
     .footer-content {
@@ -331,24 +491,40 @@
     }
 
     .footer-logo {
-      width: 150px;
-      margin-bottom: 20px;
+      width: 180px;
+      margin-bottom: 30px;
+      opacity: 0.9;
     }
 
     .footer-links {
       display: flex;
       justify-content: center;
       list-style: none;
-      margin: 30px 0;
+      margin: 40px 0;
       flex-wrap: wrap;
     }
 
     .footer-links li {
-      margin: 0 15px 15px;
+      margin: 0 20px 15px;
     }
 
     .footer-links a {
       color: var(--moon-gray);
+      transition: var(--transition);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      position: relative;
+    }
+
+    .footer-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--tech-teal);
       transition: var(--transition);
     }
 
@@ -356,41 +532,94 @@
       color: var(--tech-teal);
     }
 
+    .footer-links a:hover::after {
+      width: 100%;
+    }
+
     .social-links {
-      margin: 30px 0;
+      margin: 40px 0;
     }
 
     .social-links a {
       color: var(--star-white);
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       margin: 0 15px;
       transition: var(--transition);
+      display: inline-block;
     }
 
     .social-links a:hover {
       color: var(--tech-teal);
-      transform: translateY(-5px);
+      transform: translateY(-5px) scale(1.2);
     }
 
     .copyright {
-      margin-top: 30px;
+      margin-top: 40px;
       color: var(--moon-gray);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
     }
 
     .made-with-love {
       color: var(--rocket-red);
       margin: 0 5px;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      background: var(--tech-teal);
+      color: var(--space-blue);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      z-index: 99;
+      box-shadow: 0 5px 20px rgba(100, 255, 218, 0.3);
+    }
+
+    .back-to-top.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
     }
 
     /* Responsive Design */
+    @media (max-width: 1200px) {
+      .hero-title {
+        font-size: 3rem;
+      }
+      
+      .section-title {
+        font-size: 2.5rem;
+      }
+    }
+
     @media (max-width: 992px) {
       .hero-title {
         font-size: 2.5rem;
       }
       
       .section-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
+      }
+      
+      .stat-number {
+        font-size: 3rem;
       }
     }
 
@@ -419,6 +648,14 @@
       .hero-logo {
         width: 250px;
       }
+      
+      .section-title {
+        font-size: 2rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     @media (max-width: 576px) {
@@ -427,25 +664,45 @@
       }
       
       .hero-subtitle {
-        font-size: 1rem;
+        font-size: 1.1rem;
       }
       
       .section-title {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
       }
       
       .btn {
-        padding: 12px 25px;
+        padding: 14px 30px;
         font-size: 0.8rem;
       }
       
       .footer-links li {
         margin: 0 10px 10px;
       }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .back-to-top {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        bottom: 20px;
+        right: 20px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo" class="loading-logo">
+    <div class="loading-bar">
+      <div class="loading-progress" id="loadingProgress"></div>
+    </div>
+  </div>
+
   <!-- Animated Space Background -->
   <div class="space-bg" id="stars"></div>
 
@@ -454,14 +711,14 @@
     <div class="hero-content">
       <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo" class="hero-logo">
       <h1 class="hero-title">Rama Society of Research & Development</h1>
-      <p class="hero-subtitle">Pioneering the future of space research and scientific discovery</p>
+      <p class="hero-subtitle">Pioneering the future of space research and scientific discovery through cutting-edge innovation and collaborative excellence</p>
       <a href="#research" class="btn">Explore Our Mission</a>
       <a href="#research" class="scroll-down"><i class="fas fa-chevron-down"></i></a>
     </div>
   </section>
 
   <!-- Navigation -->
-  <nav>
+  <nav id="mainNav">
     <div class="nav-container">
       <div class="logo">
         <img src="https://i.ibb.co/dmZZ961/Subheading-2.png" alt="RSRD Logo">
@@ -483,15 +740,40 @@
     <div class="section-container">
       <h2 class="section-title">Explore Our Research</h2>
       <p class="research-content">
-        Our society is dedicated to advancing research in science and mathematics. Through collaborations and mentorships, we aim to cultivate a research-oriented mindset in students. Join us in our journey of discovery and innovation.
+        Our society is dedicated to advancing research in science and mathematics. Through collaborations and mentorships, we aim to cultivate a research-oriented mindset in students. Join us in our journey of discovery and innovation as we push the boundaries of space technology and scientific understanding.
       </p>
 
       <div class="research-image-container">
         <img src="https://im.indiatimes.in/content/2019/Jul/isro_history_1563885126.jpg?w=640&h=427&cc=1&webp=1&q=75" alt="Space Research" class="research-image">
-        <div class="image-caption">ISRO's pioneering work in space technology inspires our research initiatives</div>
+        <div class="image-caption">Inspired by ISRO's groundbreaking achievements in space exploration and technology</div>
       </div>
 
       <a href="research.html" class="btn">Access Research Portal</a>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="section-container">
+      <h2 class="section-title">Our Impact</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number" id="researchProjects">0</div>
+          <div class="stat-label">Research Projects</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="collaborations">0</div>
+          <div class="stat-label">Global Collaborations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="publications">0</div>
+          <div class="stat-label">Publications</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" id="members">0</div>
+          <div class="stat-label">Active Members</div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -510,11 +792,12 @@
       </ul>
       
       <div class="social-links">
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+        <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+        <a href="#" title="GitHub"><i class="fab fa-github"></i></a>
       </div>
       
       <p class="copyright">
@@ -524,11 +807,36 @@
     </div>
   </footer>
 
+  <!-- Back to Top Button -->
+  <div class="back-to-top" id="backToTop">
+    <i class="fas fa-arrow-up"></i>
+  </div>
+
   <script>
-    // Create stars for background
+    // Loading Screen Animation
     document.addEventListener('DOMContentLoaded', function() {
+      const loadingScreen = document.getElementById('loadingScreen');
+      const loadingProgress = document.getElementById('loadingProgress');
+      
+      // Simulate loading progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += Math.random() * 10;
+        if (progress > 100) progress = 100;
+        loadingProgress.style.width = `${progress}%`;
+        
+        if (progress >= 100) {
+          clearInterval(interval);
+          loadingScreen.style.opacity = '0';
+          setTimeout(() => {
+            loadingScreen.style.display = 'none';
+          }, 500);
+        }
+      }, 200);
+      
+      // Create stars for background
       const spaceBg = document.getElementById('stars');
-      const starCount = 200;
+      const starCount = 300;
       
       for (let i = 0; i < starCount; i++) {
         const star = document.createElement('div');
@@ -547,14 +855,83 @@
       
       // Add scrolling effect to navigation
       window.addEventListener('scroll', function() {
-        const nav = document.querySelector('nav');
+        const nav = document.getElementById('mainNav');
+        const backToTop = document.getElementById('backToTop');
+        
         if (window.scrollY > 50) {
-          nav.style.padding = '10px 0';
+          nav.style.padding = '15px 0';
           nav.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.3)';
         } else {
           nav.style.padding = '20px 0';
           nav.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
         }
+        
+        // Show back to top button
+        if (window.scrollY > 300) {
+          backToTop.classList.add('active');
+        } else {
+          backToTop.classList.remove('active');
+        }
+      });
+      
+      // Back to top functionality
+      document.getElementById('backToTop').addEventListener('click', function() {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+      
+      // Animate stats counters
+      function animateValue(id, start, end, duration) {
+        const obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+          if (!startTimestamp) startTimestamp = timestamp;
+          const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+          obj.innerHTML = Math.floor(progress * (end - start) + start);
+          if (progress < 1) {
+            window.requestAnimationFrame(step);
+          }
+        };
+        window.requestAnimationFrame(step);
+      }
+      
+      // Start counters when stats section is in view
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateValue('researchProjects', 0, 42, 2000);
+            animateValue('collaborations', 0, 18, 2000);
+            animateValue('publications', 0, 76, 2000);
+            animateValue('members', 0, 215, 2000);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      observer.observe(document.querySelector('.stats-section'));
+      
+      // Force refresh to index.html when page is refreshed
+      window.addEventListener('beforeunload', function() {
+        window.scrollTo(0, 0);
+      });
+      
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
       });
     });
   </script>

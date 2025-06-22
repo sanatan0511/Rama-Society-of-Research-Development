@@ -16,7 +16,7 @@
       font-family: 'Arial', sans-serif;
       color: #333;
       background-color: #f5f5f5;
-      background-image: url('https://i.imgur.com/JfQ3y9T.jpg'); /* Replace with your actual image URL */
+      background-image: url('https://i.imgur.com/JfQ3y9T.jpg');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -186,6 +186,10 @@
       color: #7b1d1d;
       font-weight: bold;
       margin-top: 10px;
+      background-color: rgba(255,255,255,0.7);
+      padding: 5px 10px;
+      border-radius: 5px;
+      display: inline-block;
     }
 
     .security-info {
@@ -358,6 +362,7 @@
     let failedAttempts = 0;
     let sessionTimer;
     let timeLeft = 300; // 5 minutes in seconds
+    let sessionActive = false;
     
     // Password age tracking (in days)
     const PASSWORD_MAX_AGE = 360; // days
@@ -383,6 +388,18 @@
         window.speechSynthesis.speak(speech);
       }
     }
+    
+    // Function to speak welcome message for next page
+    function speakNextPageWelcome() {
+      if ('speechSynthesis' in window) {
+        const speech = new SpeechSynthesisUtterance();
+        speech.text = "SiyaRam Research and Development welcomes you. Develop India. Develop Nation.";
+        speech.lang = 'en-IN';
+        speech.rate = 0.9; // Slightly slower for clarity
+        speech.pitch = 1.1; // Slightly higher pitch for enthusiasm
+        window.speechSynthesis.speak(speech);
+      }
+    }
 
     // Call the welcome message when page loads
     window.onload = function() {
@@ -393,7 +410,35 @@
       if (sessionStorage.getItem("loggedIn") === "true") {
         checkPasswordAge();
       }
+      
+      // Start checking session status
+      checkSessionStatus();
     };
+    
+    function checkSessionStatus() {
+      if (sessionActive) {
+        timeLeft--;
+        updateTimerDisplay();
+        
+        if (timeLeft <= 0) {
+          endSession();
+        }
+      }
+      setTimeout(checkSessionStatus, 1000);
+    }
+    
+    function startSession() {
+      sessionActive = true;
+      timeLeft = 300; // 5 minutes
+      updateTimerDisplay();
+    }
+    
+    function endSession() {
+      sessionActive = false;
+      sessionStorage.removeItem("loggedIn");
+      alert('Your session has expired. Please login again.');
+      window.location.href = window.location.href;
+    }
 
     function validateLogin() {
       // Prevent login after 3 failed attempts
@@ -428,8 +473,8 @@
         sessionStorage.setItem("loggedIn", true);
         sessionStorage.setItem("username", enteredUsername);
 
-        // Start session timer
-        startSessionTimer();
+        // Start session
+        startSession();
 
         // Check password age and show appropriate modal
         checkPasswordAge();
@@ -457,7 +502,7 @@
         document.getElementById('passwordModal').style.display = 'block';
       } else {
         // Password is fine - proceed to admin page
-        window.location.href = 'first-page.html';
+        proceedToNextPage();
       }
     }
 
@@ -491,8 +536,8 @@
       alert('Password changed successfully!');
       closeModal();
       
-      // Redirect to admin page
-      window.location.href = 'first-page.html';
+      // Proceed to next page with welcome message
+      proceedToNextPage();
     }
     
     function forceChangePassword() {
@@ -524,36 +569,29 @@
       
       alert('Password changed successfully! You can now proceed.');
       
-      // Redirect to admin page
-      window.location.href = 'first-page.html';
+      // Proceed to next page with welcome message
+      proceedToNextPage();
+    }
+    
+    function proceedToNextPage() {
+      // Speak welcome message before redirecting
+      speakNextPageWelcome();
+      
+      // Redirect to admin page after a short delay to allow speech
+      setTimeout(() => {
+        window.location.href = 'first-page.html';
+      }, 1500);
     }
     
     function remindLater() {
       closeModal();
-      // Redirect to admin page
-      window.location.href = 'first-page.html';
+      // Proceed to next page with welcome message
+      proceedToNextPage();
     }
 
     function closeModal() {
       document.getElementById('passwordModal').style.display = 'none';
       document.getElementById('forcePasswordModal').style.display = 'none';
-    }
-
-    function startSessionTimer() {
-      clearInterval(sessionTimer);
-      timeLeft = 300; // Reset to 5 minutes
-      updateTimerDisplay();
-      
-      sessionTimer = setInterval(function() {
-        timeLeft--;
-        updateTimerDisplay();
-        
-        if (timeLeft <= 0) {
-          clearInterval(sessionTimer);
-          alert('Your session has expired. Please login again.');
-          window.location.href = window.location.href;
-        }
-      }, 1000);
     }
 
     function updateTimerDisplay() {

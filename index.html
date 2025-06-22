@@ -16,7 +16,7 @@
       font-family: 'Arial', sans-serif;
       color: #333;
       background-color: #f5f5f5;
-      background-image: url('https://tenor.com/en-GB/view/%E0%A4%B0%E0%A4%BE%E0%A4%AE-lord-rama-ram-indian-god-vishnu-avatar-gif-11632656');
+      background-image: url('https://i.imgur.com/JfQ3y9T.jpg'); /* Replace with your actual image URL */
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
@@ -267,6 +267,32 @@
       background-color: #ddd;
       border: none;
     }
+    
+    /* Remind later button */
+    .remind-later-btn {
+      background-color: #ff9800 !important;
+      color: white !important;
+    }
+    
+    /* Force change modal */
+    .force-modal {
+      display: none;
+    }
+    
+    .force-modal .modal-content {
+      background-color: rgba(255, 235, 235, 0.95);
+      border: 2px solid #7b1d1d;
+    }
+    
+    .force-modal h3 {
+      color: #d32f2f;
+    }
+    
+    .force-modal p.warning {
+      color: #d32f2f;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
   </style>
 
   <!-- Include Google reCAPTCHA Script -->
@@ -297,17 +323,32 @@
     </form>
   </div>
 
-  <!-- Password Change Modal -->
+  <!-- Password Change Modal (60-day reminder) -->
   <div id="passwordModal" class="modal">
     <div class="modal-content">
-      <h3>Change Password</h3>
-      <p>For security reasons, please change your password:</p>
+      <h3>Password Change Recommended</h3>
+      <p>Your password is more than 60 days old. For security reasons, we recommend changing it now.</p>
       <input type="password" id="currentPassword" placeholder="Current Password">
       <input type="password" id="newPassword" placeholder="New Password">
       <input type="password" id="confirmPassword" placeholder="Confirm New Password">
       <div class="modal-buttons">
         <button onclick="changePassword()">Change Password</button>
-        <button onclick="closeModal()">Cancel</button>
+        <button onclick="remindLater()" class="remind-later-btn">Remind Me Later</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Force Password Change Modal (360-day requirement) -->
+  <div id="forcePasswordModal" class="modal force-modal">
+    <div class="modal-content">
+      <h3>Password Change Required</h3>
+      <p class="warning">Your password is more than 360 days old and must be changed before you can proceed.</p>
+      <p>For security reasons, you cannot continue without changing your password.</p>
+      <input type="password" id="forceCurrentPassword" placeholder="Current Password" required>
+      <input type="password" id="forceNewPassword" placeholder="New Password" required>
+      <input type="password" id="forceConfirmPassword" placeholder="Confirm New Password" required>
+      <div class="modal-buttons">
+        <button onclick="forceChangePassword()">Change Password</button>
       </div>
     </div>
   </div>
@@ -317,6 +358,21 @@
     let failedAttempts = 0;
     let sessionTimer;
     let timeLeft = 300; // 5 minutes in seconds
+    
+    // Password age tracking (in days)
+    const PASSWORD_MAX_AGE = 360; // days
+    const PASSWORD_WARNING_AGE = 60; // days
+    let passwordLastChanged = localStorage.getItem('passwordLastChanged');
+    
+    // Initialize password last changed date if not set
+    if (!passwordLastChanged) {
+      // Set to 61 days ago to trigger the warning (for demo purposes)
+      // In production, you would set this to the actual last changed date
+      const date = new Date();
+      date.setDate(date.getDate() - 61);
+      passwordLastChanged = date.toISOString();
+      localStorage.setItem('passwordLastChanged', passwordLastChanged);
+    }
 
     // Speech synthesis for welcome message
     function speakWelcome() {
@@ -332,6 +388,11 @@
     window.onload = function() {
       speakWelcome();
       updateTimerDisplay();
+      
+      // Check if user is already logged in (for demo purposes)
+      if (sessionStorage.getItem("loggedIn") === "true") {
+        checkPasswordAge();
+      }
     };
 
     function validateLogin() {
@@ -370,8 +431,8 @@
         // Start session timer
         startSessionTimer();
 
-        // Show password change modal
-        document.getElementById('passwordModal').style.display = 'block';
+        // Check password age and show appropriate modal
+        checkPasswordAge();
       } else {
         // If login fails
         failedAttempts++;
@@ -380,6 +441,23 @@
         
         // Reset reCAPTCHA
         grecaptcha.reset();
+      }
+    }
+    
+    function checkPasswordAge() {
+      const lastChanged = new Date(passwordLastChanged);
+      const today = new Date();
+      const daysSinceChange = Math.floor((today - lastChanged) / (1000 * 60 * 60 * 24));
+      
+      if (daysSinceChange >= PASSWORD_MAX_AGE) {
+        // Password is too old - force change
+        document.getElementById('forcePasswordModal').style.display = 'block';
+      } else if (daysSinceChange >= PASSWORD_WARNING_AGE) {
+        // Password is old - recommend change
+        document.getElementById('passwordModal').style.display = 'block';
+      } else {
+        // Password is fine - proceed to admin page
+        window.location.href = 'first-page.html';
       }
     }
 
@@ -405,16 +483,60 @@
         return;
       }
 
-      // In a real application, you would send this to the server
+      // Update password last changed date
+      const today = new Date();
+      localStorage.setItem('passwordLastChanged', today.toISOString());
+      passwordLastChanged = today.toISOString();
+      
       alert('Password changed successfully!');
       closeModal();
       
       // Redirect to admin page
       window.location.href = 'first-page.html';
     }
+    
+    function forceChangePassword() {
+      const currentPass = document.getElementById('forceCurrentPassword').value;
+      const newPass = document.getElementById('forceNewPassword').value;
+      const confirmPass = document.getElementById('forceConfirmPassword').value;
+
+      // Validate current password
+      if (currentPass !== 'Siya4811@') {
+        alert('Current password is incorrect');
+        return;
+      }
+
+      // Validate new password
+      if (newPass !== confirmPass) {
+        alert('New passwords do not match');
+        return;
+      }
+
+      if (newPass.length < 8) {
+        alert('Password must be at least 8 characters long');
+        return;
+      }
+
+      // Update password last changed date
+      const today = new Date();
+      localStorage.setItem('passwordLastChanged', today.toISOString());
+      passwordLastChanged = today.toISOString();
+      
+      alert('Password changed successfully! You can now proceed.');
+      
+      // Redirect to admin page
+      window.location.href = 'first-page.html';
+    }
+    
+    function remindLater() {
+      closeModal();
+      // Redirect to admin page
+      window.location.href = 'first-page.html';
+    }
 
     function closeModal() {
       document.getElementById('passwordModal').style.display = 'none';
+      document.getElementById('forcePasswordModal').style.display = 'none';
     }
 
     function startSessionTimer() {

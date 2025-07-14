@@ -3,36 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Open Contact Page</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    #openBtn {
-      padding: 12px 24px;
-      font-size: 18px;
-      cursor: pointer;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-    }
-    #openBtn:hover {
-      background-color: #0056b3;
-    }
-  </style>
+  <title>Auto Open Contact Page</title>
+  <script>
+    window.onload = function() {
+      window.open('https://bhagirathi-namamiganga.streamlit.app/', '_blank', 'noopener');
+    };
+  </script>
 </head>
 <body>
-
-<h2>Click the button below to open the Contact page:</h2>
-<button id="openBtn">Open Contact Page</button>
-
-<script>
-  document.getElementById('openBtn').addEventListener('click', function() {
-    window.open('https://bhagirathi-namamiganga.streamlit.app/', '_blank', 'noopener');
-  });
-</script>
-
+  <p>If a new tab didn’t open automatically, <a href="https://bhagirathi-namamiganga.streamlit.app/" target="_blank" rel="noopener noreferrer">click here to open the Contact page</a>.</p>
 </body>
 </html>
